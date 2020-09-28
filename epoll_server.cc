@@ -6,6 +6,7 @@
 
 bool is_running = true;
 static void ctrl_handler(int sig){
+    printf("ctrl+c\n");
     is_running = false;
 }
 
@@ -44,6 +45,9 @@ int main()
     {
         sleep(1);
     }
+    printf("try to stop server");
     pser->set_running_flag(false);
     pthread_join(t, NULL);
+    pser->clear_data();
+    delete pser;
 }

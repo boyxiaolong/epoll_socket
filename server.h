@@ -215,6 +215,7 @@ class Server
                     }
                 }
             }
+            printf("server finish\n");
         }
 
         void set_running_flag(bool flag){
