@@ -116,10 +116,28 @@ class Server
 {
     public:
         typedef std::map<int, Socket*> socket_map;
-        Server(int ae_fd):ae_fd_(ae_fd){}
+        Server():is_running_(true){}
         ~Server(){
-
+            for (socket_map::iterator i = socket_map_.begin(); i != socket_map_.end(); ++i)
+            {
+                Socket* ps = i->second;
+                if (ps)
+                {
+                    delete ps;
+                }
+            }
         }
+
+        int init_ae(){
+            ae_fd_ = epoll_create(max_events);
+            if (ae_fd_ < 0)
+            {
+                perror("epoll_create");
+                return -1;
+            }
+            return 0;
+        }
+
         virtual int create_server_sock(){
             listen_fd_ = socket(AF_INET, SOCK_STREAM, 0);
             if (listen_fd_ < 1) 
@@ -279,19 +297,19 @@ class Server
         int listen_fd_;
             
         socket_map socket_map_;
+        bool is_running_;
 };
 
 int main()
 {
-    int epoll_fd = epoll_create(max_events);
-    if (epoll_fd < 0)
+    Server ser;
+    int res = ser.init_ae();
+    if (res < 0)
     {
-        perror("epoll_create");
         exit(-1);
     }
     
-    Server ser(epoll_fd);
-    int res = ser.create_server_sock();
+    res = ser.create_server_sock();
     if (res < 0)
     {
         printf("create error\n");
