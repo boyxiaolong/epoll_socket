@@ -17,21 +17,21 @@ static void* sock_thread_handler(void* ser){
     }
     
     Server* pser = (Server*)ser;
-    int res = ser->init_ae();
+    int res = pser->init_ae();
     if (res < 0)
     {
         exit(-1);
         return NULL;
     }
     
-    res = ser->create_server_sock();
+    res = pser->create_server_sock();
     if (res < 0)
     {
         printf("create error\n");
         return res;
     }
 
-    ser->ae_poll();
+    pser->ae_poll();
     return NULL;
 }
 int main()
