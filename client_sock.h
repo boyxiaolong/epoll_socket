@@ -1,5 +1,5 @@
 #ifndef _client_sock_h__
-#define _newlog_h_
+#define _client_sock_h__
 #include "stdio.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -109,3 +109,4 @@ class client_sock
         int max_length;
         int cur_pos;
 };
+#endif

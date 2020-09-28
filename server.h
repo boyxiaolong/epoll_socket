@@ -203,3 +203,5 @@ class Server
         socket_map socket_map_;
         bool is_running_;
 };
+
+#endif
