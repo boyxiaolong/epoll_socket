@@ -20,8 +20,12 @@ class Server
 {
     public:
         typedef std::map<int, client_sock*> socket_map;
-        Server():is_running_(true){}
+        Server():is_running_(true),max_timeout_ms_(100){}
         ~Server(){
+            clear_data();
+        }
+
+        void clear_data(){
             for (socket_map::iterator i = socket_map_.begin(); i != socket_map_.end(); ++i)
             {
                 client_sock* ps = i->second;
@@ -30,6 +34,17 @@ class Server
                     delete ps;
                 }
             }
+
+            if (ae_fd_ > 0)
+            {
+                close(ae_fd_);
+            }
+            
+            if (listen_fd_ > 0)
+            {
+                close(listen_fd_);
+            }
+            printf("server clear_data finish\n");
         }
 
         int init_ae(){
@@ -156,10 +171,10 @@ class Server
 
         virtual int ae_poll(){
             struct epoll_event events[max_events];
-            while (true)
+            while (is_running_)
             {
                 printf("begin epoll\n");
-                int nfds = epoll_wait(ae_fd_, events, max_events, -1);
+                int nfds = epoll_wait(ae_fd_, events, max_events, max_timeout_ms_);
                 if (nfds == -1)
                 {
                     if (errno == EINTR)
@@ -196,10 +211,14 @@ class Server
                 }
             }
         }
+
+        void set_running_flag(bool flag){
+            is_running_ = flag;
+        }
     private:
         int ae_fd_;
         int listen_fd_;
-            
+        int max_timeout_ms_;
         socket_map socket_map_;
         bool is_running_;
 };

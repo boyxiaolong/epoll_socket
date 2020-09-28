@@ -27,6 +27,12 @@ class client_sock
             {
                 delete []buf_;
             }
+
+            if (fd_ > 0)
+            {
+                close_sock();
+            }
+            
             printf("fd %d dtor\n", fd_);
         }
         
@@ -100,6 +106,10 @@ class client_sock
             }
 
             process_data();
+        }
+
+        void close_sock(){
+            close(fd_);
         }
 
     private:
