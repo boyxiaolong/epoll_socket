@@ -33,6 +33,7 @@ class Server
                 {
                     epoll_ctl(ae_fd_, EPOLL_CTL_DEL, ps->get_fd(), NULL);
                     close(ps->get_fd());
+                    printf("close client %d\n", ps->get_fd());
                     delete ps;
                 }
             }
@@ -41,12 +42,14 @@ class Server
             {
                 epoll_ctl(ae_fd_, EPOLL_CTL_DEL, ps->get_fd(), NULL);
                 close(listen_fd_);
+                listen_fd_ = 0;
             }
 
             printf("begin close ae_fd\n");
             if (ae_fd_ > 0)
             {
                 close(ae_fd_);
+                ae_fd_ = 0;
             }
             printf("server clear_data finish\n");
         }
