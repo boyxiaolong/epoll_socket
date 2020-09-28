@@ -9,17 +9,19 @@ static void ctrl_handler(int sig){
     is_running = false;
 }
 
-static void sock_thread_handler(void* ser){
+static void* sock_thread_handler(void* ser){
     if (NULL == ser)
     {
         printf("thread error");
-        return;
+        return NULL;
     }
     
+    Server* pser = (Server*)ser;
     int res = ser->init_ae();
     if (res < 0)
     {
         exit(-1);
+        return NULL;
     }
     
     res = ser->create_server_sock();
@@ -30,6 +32,7 @@ static void sock_thread_handler(void* ser){
     }
 
     ser->ae_poll();
+    return NULL;
 }
 int main()
 {
@@ -42,5 +45,5 @@ int main()
         sleep(1);
     }
     pser->set_running_flag(false);
-    t.join();
+    pthread_join(t, NULL);
 }
