@@ -37,7 +37,7 @@ class Server
                     delete ps;
                 }
             }
-            
+            socket_map_.clear();
             if (listen_fd_ > 0)
             {
                 epoll_ctl(ae_fd_, EPOLL_CTL_DEL, listen_fd_, NULL);
