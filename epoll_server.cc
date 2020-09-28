@@ -50,4 +50,5 @@ int main()
     pthread_join(t, NULL);
     pser->clear_data();
     delete pser;
+    printf("finish main\n");
 }
