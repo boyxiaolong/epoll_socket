@@ -31,18 +31,22 @@ class Server
                 client_sock* ps = i->second;
                 if (ps)
                 {
+                    epoll_ctl(ae_fd_, EPOLL_CTL_DEL, ps->get_fd(), NULL);
+                    close(ps->get_fd());
                     delete ps;
                 }
-            }
-
-            if (ae_fd_ > 0)
-            {
-                close(ae_fd_);
             }
             
             if (listen_fd_ > 0)
             {
+                epoll_ctl(ae_fd_, EPOLL_CTL_DEL, ps->get_fd(), NULL);
                 close(listen_fd_);
+            }
+
+            printf("begin close ae_fd\n");
+            if (ae_fd_ > 0)
+            {
+                close(ae_fd_);
             }
             printf("server clear_data finish\n");
         }
@@ -166,6 +170,7 @@ class Server
             socket_map_.erase(iter);
 
             epoll_ctl(ae_fd_, EPOLL_CTL_DEL, cur_fd, NULL);
+            close(cur_fd);
             printf("delete fd:%d client close socket\n", cur_fd);
         }
 
