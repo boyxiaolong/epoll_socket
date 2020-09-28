@@ -175,6 +175,11 @@ class Server
             {
                 printf("begin epoll\n");
                 int nfds = epoll_wait(ae_fd_, events, max_events, max_timeout_ms_);
+                if (nfds == 0)
+                {
+                    continue;
+                }
+                
                 if (nfds == -1)
                 {
                     if (errno == EINTR)
