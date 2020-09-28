@@ -1,3 +1,5 @@
+#ifndef _server_h__
+#define _server_h__
 #include "stdio.h"
 #include <sys/epoll.h>
 #include <sys/types.h>
@@ -124,7 +126,7 @@ class Server
             fcntl(sock, F_SETFL, flags);
         }
 
-        Socket* get_sock_ps(int cur_fd){
+        client_sock* get_sock_ps(int cur_fd){
             socket_map::iterator iter = socket_map_.find(cur_fd);
             if (iter == socket_map_.end())
             {

@@ -1,3 +1,5 @@
+#ifndef _client_sock_h__
+#define _newlog_h_
 #include "stdio.h"
 #include <sys/types.h>
 #include <sys/socket.h>
