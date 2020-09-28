@@ -28,7 +28,7 @@ static void* sock_thread_handler(void* ser){
     if (res < 0)
     {
         printf("create error\n");
-        return res;
+        return NULL;
     }
 
     pser->ae_poll();
