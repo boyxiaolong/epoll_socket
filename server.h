@@ -40,7 +40,7 @@ class Server
             
             if (listen_fd_ > 0)
             {
-                epoll_ctl(ae_fd_, EPOLL_CTL_DEL, ps->get_fd(), NULL);
+                epoll_ctl(ae_fd_, EPOLL_CTL_DEL, listen_fd_, NULL);
                 close(listen_fd_);
                 listen_fd_ = 0;
             }
