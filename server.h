@@ -24,7 +24,7 @@ class Server
         ~Server(){
             for (socket_map::iterator i = socket_map_.begin(); i != socket_map_.end(); ++i)
             {
-                Socket* ps = i->second;
+                client_sock* ps = i->second;
                 if (ps)
                 {
                     delete ps;
