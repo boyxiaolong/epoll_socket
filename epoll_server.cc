@@ -2,6 +2,7 @@
 #include "client_sock.h"
 #include "server.h"
 #include "signal.h"
+#include "pthread.h"
 
 bool is_running = true;
 static void ctrl_handler(int sig){
