@@ -9,7 +9,6 @@
 #include "unistd.h"
 #include <fcntl.h>
 #include <errno.h>
-#include <map>
 #include <netinet/tcp.h>
 #include <sys/epoll.h>
 
@@ -17,7 +16,7 @@ class client_sock
 {
     public:
         client_sock(int fd):fd_(fd)
-        , max_length(1024)
+        , max_length(16)
         , cur_pos(0)
         {
             buf_ = new char[max_length];
@@ -62,6 +61,16 @@ class client_sock
         void add_pos(int length)
         {
             cur_pos += length;
+            if (get_left_length() < 1)
+            {
+                int new_length = max_length*2;
+                char* new_data = new char[new_length];
+                memcpy(new_data, buf_, max_length);
+                max_length = new_length;
+                delete buf_;
+                buf_ = new_data;
+                printf("resize data %d\n", new_length);
+            }
         }
 
         int read_data(){
@@ -96,7 +105,7 @@ class client_sock
                     
                     break;
                 }
-                
+                printf("scok %d read size %d\n left_size %d\n", fd_, nread, get_left_length());
                 add_pos(nread);
                 readn += nread;
                 printf("readnum:%d\n", nread);
