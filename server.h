@@ -82,7 +82,7 @@ class Server
             serv_addr.sin_port = htons (SERVER_PORT);
             serv_addr.sin_addr.s_addr = htonl (INADDR_ANY);
             
-            printf("begin bind\n");
+            printf("begin bind on port %d\n", SERVER_PORT);
             int ret = bind(listen_fd_, (struct sockaddr *) (&serv_addr), sizeof(serv_addr));
             if (ret < 0)
             {
@@ -120,17 +120,12 @@ class Server
                     res = -1;
                     break;
                 }
-                set_sock_noblock(new_socket);
-                struct epoll_event client_ev;
-                client_ev.events = EPOLLIN;
-                client_ev.data.fd = new_socket;
-                if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, new_socket, &client_ev) < 0)
-                {
-                    res = -1;
-                    break;
-                }
-                printf("accept new socket %d and addto epoll\n", new_socket);
                 client_sock* ps = new client_sock(new_socket);
+                ps->set_nodelay();
+                ps->set_noblock();
+                ps->set_event(ae_fd_, EPOLLIN);
+                printf("accept new socket %d and addto epoll\n", new_socket);
+                
                 socket_map_.insert(std::make_pair(new_socket, ps));
             } while (true);
             printf("end ae_accept\n");
@@ -177,7 +172,7 @@ class Server
             struct epoll_event events[max_events];
             while (is_running_)
             {
-                printf("begin epoll\n");
+                //printf("begin epoll\n");
                 int nfds = epoll_wait(ae_fd_, events, max_events, max_timeout_ms_);
                 if (nfds == 0)
                 {
