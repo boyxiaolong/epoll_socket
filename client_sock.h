@@ -105,7 +105,7 @@ class client_sock
                     
                     break;
                 }
-                printf("scok %d read size %d\n left_size %d\n", fd_, nread, get_left_length());
+                printf("scok %d read size %d left_size %d\n", fd_, nread, get_left_length());
                 add_pos(nread);
                 readn += nread;
                 printf("readnum:%d\n", nread);
