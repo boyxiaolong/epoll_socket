@@ -20,7 +20,7 @@ class Server
 {
     public:
         typedef std::map<int, client_sock*> socket_map;
-        Server():is_running_(true),max_timeout_ms_(100){}
+        Server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL){}
         ~Server(){
             clear_data();
         }
@@ -72,7 +72,10 @@ class Server
                 return -1;    
             }
 
-            set_sock_noblock(listen_fd_);
+            pserver_sock_ = new client_sock(listen_fd_);
+
+            pserver_sock_->set_noblock();
+            pserver_sock_->set_nodelay();
             struct sockaddr_in serv_addr;
             memset(&serv_addr, 0, sizeof(serv_addr));
             serv_addr.sin_family = AF_INET;
@@ -96,14 +99,7 @@ class Server
             }
             printf("listen success %d\n", listen_fd_);
 
-            struct epoll_event ev;
-            ev.events = EPOLLIN;
-            ev.data.fd = listen_fd_;
-            if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, listen_fd_, &ev) < 0)
-            {
-                perror("epoll_ctl");
-                return -1;
-            }
+            pserver_sock_->set_event(ae_fd_, EPOLLIN);
         }
 
         virtual int ae_accept(){
@@ -231,6 +227,8 @@ class Server
         }
     private:
         int ae_fd_;
+
+        client_sock* pserver_sock_;
         int listen_fd_;
         int max_timeout_ms_;
         socket_map socket_map_;

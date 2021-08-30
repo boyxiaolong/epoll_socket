@@ -11,7 +11,7 @@
 #include <errno.h>
 #include <map>
 #include <netinet/tcp.h>
-
+#include <sys/epoll.h>
 
 class client_sock
 {
@@ -129,6 +129,18 @@ class client_sock
         int set_nodelay() {
             int val = 1;
             return setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(&val));
+        }
+
+        int set_event(int ep_fd, int event) {
+            struct epoll_event ev;
+            ev.events = event;
+            ev.data.fd = fd_;
+            if (epoll_ctl(ep_fd, EPOLL_CTL_ADD, fd_, &ev) < 0)
+            {
+                perror("epoll_ctl");
+                return -1;
+            }
+            return 0;
         }
 
     private:
