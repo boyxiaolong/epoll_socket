@@ -109,6 +109,7 @@ class client_sock
             }
 
             process_data();
+            return 0;
         }
 
         void close_sock(){
