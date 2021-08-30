@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <map>
+#include <netinet/tcp.h>
 
 
 class client_sock
@@ -114,6 +115,20 @@ class client_sock
 
         int get_fd(){
             return fd_;
+        }
+
+        int set_noblock(){
+            int flags = fcntl(fd_, F_GETFL);
+            if (-1 == flags) {
+                return -1;
+            }
+
+            return fcntl(fd_, F_SETFL, flags |O_NONBLOCK);
+        }
+
+        int set_nodelay() {
+            int val = 1;
+            return setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(&val));
         }
 
     private:
