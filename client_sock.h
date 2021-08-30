@@ -78,6 +78,7 @@ class client_sock
                         break;
                     }
                     
+                    printf("read error %d\n", nread);
                     is_read_error = true;
                     break;
                 }
@@ -85,11 +86,12 @@ class client_sock
                 {
                     if (readn == 0)
                     {
+                        printf("read error 2\n");
                         is_read_error = true;
                     }
                     else
                     {
-                        printf("readnum 0 so read end");
+                        printf("readnum 0 so read end\n");
                     }
                     
                     break;
