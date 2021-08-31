@@ -1,13 +1,13 @@
-#include "log.h"
+#include "../include/log.h"
 
 #include <sys/io.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <sys/time.h>
 #include <time.h>
 #include <pthread.h>
 #include <string.h>
+#include <string>
 
 void snprintf_s(char*buf, int _max, int& len, const char* fmt, ...) {
     if (len >= 0 && len < _max) {

@@ -1,4 +1,4 @@
-#include "server.h"
+#include "../include/server.h"
 
 #include "stdio.h"
 #include <sys/epoll.h>
@@ -9,7 +9,8 @@
 #include "string.h"
 #include "unistd.h"
 #include "netdb.h"
-#include "log.h"
+
+#include "../include/log.h"
 
 Server::Server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL) {
 

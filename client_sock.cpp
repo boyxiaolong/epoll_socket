@@ -1,6 +1,21 @@
-#include "client_sock.h"
-#include "log.h"
+#include "../include/client_sock.h"
+
+
+#include "stdio.h"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include "stdlib.h"
+#include "netinet/in.h"
+#include "string.h"
+#include "unistd.h"
+#include <fcntl.h>
+#include <errno.h>
+#include <netinet/tcp.h>
+#include <sys/epoll.h>
+
 #include <string>
+
+#include "../include/log.h"
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
