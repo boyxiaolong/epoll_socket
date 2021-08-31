@@ -24,6 +24,7 @@ void Server::clear_data() {
     {
         pserver_sock_->close_sock();
         listen_fd_ = 0;
+        delete pserver_sock_;
     }
 
     printf("begin close ae_fd\n");
