@@ -16,16 +16,22 @@ class Server {
 
         void clear_data();
 
+        //初始化epoll
         int init_ae();
 
+        //创建server
         virtual int create_server_sock(const char* ip, uint16_t port);
 
+        //处理新连接
         virtual int ae_accept();
 
+        //获取连接
         client_sock* get_sock_ps(int cur_fd);
 
+        //删除连接
         virtual void rm_client_sock(int cur_fd);
 
+        //epoll事件循环
         virtual int ae_poll();
 
         void set_running_flag(bool flag) { is_running_ = flag; }
