@@ -118,7 +118,7 @@ int Server::create_server_sock(const char* ip, uint16_t port) {
     return 0;
 }
 
-int Server::ae_accept() {
+int Server::_ae_accept() {
     LOG("begin ae_accept");
     int res = 0;
     do {
@@ -198,7 +198,7 @@ int Server::ae_poll() {
             int cur_fd = cur_ev.data.fd;
             LOG("epoll cur_fd %d", cur_fd);
             if (cur_fd == listen_fd_) {
-                ae_accept();
+                _ae_accept();
             }
             else {
                 client_sock* ps = get_sock_ps(cur_fd);

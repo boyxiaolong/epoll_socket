@@ -20,9 +20,6 @@ class Server {
         //创建server
         virtual int create_server_sock(const char* ip, uint16_t port);
 
-        //处理新连接
-        virtual int ae_accept();
-
         //获取连接
         client_sock* get_sock_ps(int cur_fd);
 
@@ -33,6 +30,10 @@ class Server {
         virtual int ae_poll();
 
         void set_running_flag(bool flag) { is_running_ = flag; }
+
+    private:
+        //处理新连接
+        int _ae_accept();
         
     private:
 
