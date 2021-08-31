@@ -9,7 +9,7 @@ def list_dir(dir):
 	return all_dirs
 
 cc_flags = {'CCFLAGS' : ['-D_LINUX', '-D_DEBUG', '-g', '-O0',]}
-inc_flags = {}
+inc_flags = {'CPPPATH' : ['../header']}
 obj = Glob('*.cpp')
 all_dirs = list_dir('./')
 print(all_dirs)
