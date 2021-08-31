@@ -3,6 +3,7 @@
 #include "server.h"
 #include "signal.h"
 #include "pthread.h"
+#include "log.h"
 
 bool is_running = true;
 static void ctrl_handler(int sig){
@@ -45,10 +46,10 @@ int main()
     {
         sleep(1);
     }
-    printf("try to stop server");
+    LOG("try to stop server");
     pser->set_running_flag(false);
     pthread_join(t, NULL);
     pser->clear_data();
     delete pser;
-    printf("finish main\n");
+    LOG("finish main");
 }

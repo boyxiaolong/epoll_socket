@@ -9,6 +9,7 @@
 #include "string.h"
 #include "unistd.h"
 #include "netdb.h"
+#include "log.h"
 
 Server::Server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL) {
 
@@ -25,7 +26,7 @@ void Server::clear_data() {
         if (ps)
         {
             ps->close_sock();
-            printf("close client %d\n", ps->get_fd());
+            LOG("close client %d", ps->get_fd());
             delete ps;
         }
     }
@@ -37,20 +38,20 @@ void Server::clear_data() {
         delete pserver_sock_;
     }
 
-    printf("begin close ae_fd\n");
+    LOG("begin close ae_fd");
     if (ae_fd_ > 0)
     {
         close(ae_fd_);
         ae_fd_ = 0;
     }
-    printf("server clear_data finish\n");
+    LOG("server clear_data finish");
 }
 
 int Server::init_ae() {
     ae_fd_ = epoll_create(max_events);
     if (ae_fd_ < 0)
     {
-        perror("epoll_create");
+        LOG("error epoll_create");
         return -1;
     }
     return 0;
@@ -65,7 +66,7 @@ int Server::create_server_sock(char* ip, uint16_t port) {
     listen_fd_ = socket(serv_addr.ai_family, serv_addr.ai_socktype, 0);
     if (listen_fd_ < 1) 
     {
-        printf("socket create\n");
+        LOG("socket create");
         return -1;    
     }
 
@@ -75,39 +76,41 @@ int Server::create_server_sock(char* ip, uint16_t port) {
     int res = getaddrinfo(ip, port_str, &serv_addr, &real_server_info);
     if (res < 0)
     {
-        printf("getaddrinfo error %d\n", res);
+        LOG("getaddrinfo error %d", res);
         close(listen_fd_);
         return -1;
     }
 
-    printf("begin bind on port %d\n", port);
+    LOG("begin bind on port %d", port);
     int ret = bind(listen_fd_, (struct sockaddr *) (real_server_info->ai_addr), real_server_info->ai_addrlen);
+    freeaddrinfo(real_server_info);
     if (ret < 0)
     {
-        printf("bind\n");
+        LOG("bind");
         close(listen_fd_);
         return -1;
     }
-    printf("bind success\n");
+    LOG("bind success");
     
     ret = listen(listen_fd_, max_events);
     if (ret < 0)
     {
-        printf("listen error\n");
+        LOG("listen error");
         close(listen_fd_);
         return -1;
     }
 
-    printf("listen success %d\n", listen_fd_);
+    LOG("listen success %d", listen_fd_);
 
     pserver_sock_ = new client_sock(ae_fd_, listen_fd_);
     pserver_sock_->set_noblock();
     pserver_sock_->set_nodelay();
     pserver_sock_->set_event(EPOLLIN);
+    return 0;
 }
 
 int Server::ae_accept() {
-    printf("begin ae_accept\n");
+    LOG("begin ae_accept");
     int res = 0;
     do
     {
@@ -118,7 +121,7 @@ int Server::ae_accept() {
         {
             if (errno == EAGAIN)
             {
-                printf("fd %d acceptc nonblock!", ae_fd_);
+                LOG("fd %d acceptc nonblock!", ae_fd_);
                 break;
             }
             res = -1;
@@ -128,11 +131,11 @@ int Server::ae_accept() {
         ps->set_nodelay();
         ps->set_noblock();
         ps->set_event(EPOLLIN);
-        printf("accept new socket %d and addto epoll\n", new_socket);
+        LOG("accept new socket %d and addto epoll", new_socket);
         
         socket_map_.insert(std::make_pair(new_socket, ps));
     } while (true);
-    printf("end ae_accept\n");
+    LOG("end ae_accept");
     return res;
 }
 
@@ -163,7 +166,7 @@ void Server::rm_client_sock(int fd) {
     
     ps->close_sock();
     delete ps;    
-    printf("delete fd:%d client close socket\n", fd);
+    LOG("delete fd:%d client close socket", fd);
 }
 
 int Server::ae_poll() {
@@ -187,12 +190,12 @@ int Server::ae_poll() {
             perror("wait");
             exit(-1);
         }
-        printf("get epoll data %d\n", nfds);
+        LOG("get epoll data %d", nfds);
         for (size_t i = 0; i < nfds; i++)
         {
             epoll_event& cur_ev = events[i];
             int cur_fd = cur_ev.data.fd;
-            printf("epoll cur_fd %d\n", cur_fd);
+            LOG("epoll cur_fd %d", cur_fd);
             if (cur_fd == listen_fd_)
             {
                 ae_accept();
@@ -212,6 +215,6 @@ int Server::ae_poll() {
             }
         }
     }
-    printf("server finish\n");
+    LOG("server finish");
     return 0;
 }

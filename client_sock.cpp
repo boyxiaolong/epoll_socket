@@ -1,5 +1,5 @@
 #include "client_sock.h"
-
+#include "log.h"
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
@@ -20,7 +20,7 @@ client_sock::~client_sock()
         close_sock();
     }
     
-    printf("fd %d dtor\n", fd_);
+    LOG("fd %d dtor", fd_);
 }
         
 char* client_sock::get_data()
@@ -41,7 +41,7 @@ void client_sock::process_data()
         *(buf_+cur_pos+1) = '\0';
     }
     
-    printf("get data length %d data:%s\n", cur_pos, buf_);
+    LOG("get data length %d data:%s", cur_pos, buf_);
     cur_pos = 0;
 }
 
@@ -56,7 +56,7 @@ void client_sock::add_pos(int length)
         max_length = new_length;
         delete buf_;
         buf_ = new_data;
-        printf("resize data %d\n", new_length);
+        LOG("resize data %d", new_length);
     }
 }
 
@@ -70,11 +70,11 @@ int client_sock::read_data(){
         {
             if (errno == EAGAIN)
             {
-                printf("fd %d read end!", fd_);
+                LOG("fd %d read end!", fd_);
                 break;
             }
             
-            printf("read error %d\n", nread);
+            LOG("read error %d\n", nread);
             is_read_error = true;
             break;
         }
@@ -82,25 +82,25 @@ int client_sock::read_data(){
         {
             if (readn == 0)
             {
-                printf("read error 2\n");
+                LOG("read error");
                 is_read_error = true;
             }
             else
             {
-                printf("readnum 0 so read end\n");
+                LOG("readnum 0 so read end");
             }
             
             break;
         }
-        printf("scok %d read size %d left_size %d\n", fd_, nread, get_left_length());
+        LOG("scok %d read size %d left_size %d", fd_, nread, get_left_length());
         add_pos(nread);
         readn += nread;
-        printf("readnum:%d\n", nread);
+        LOG("readnum:%d", nread);
     }
                 
     if (is_read_error)
     {
-        printf("is_read_error\n");
+        LOG("is_read_error");
         return -1;
     }
 
@@ -139,7 +139,7 @@ int client_sock::set_event(int event) {
     ev.data.fd = fd_;
     if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, fd_, &ev) < 0)
     {
-        perror("epoll_ctl");
+        LOG("error epoll_ctl");
         return -1;
     }
     return 0;
