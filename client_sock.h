@@ -15,7 +15,8 @@
 class client_sock
 {
     public:
-        client_sock(int fd):fd_(fd)
+        client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
+        , fd_(fd)
         , max_length(16)
         , cur_pos(0)
         {
@@ -122,7 +123,10 @@ class client_sock
         }
 
         void close_sock(){
+            epoll_ctl(ae_fd_, EPOLL_CTL_DEL, fd_, NULL);
             close(fd_);
+            fd_ = 0;
+            ae_fd_ = 0;
         }
 
         int get_fd(){
@@ -143,11 +147,11 @@ class client_sock
             return setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(&val));
         }
 
-        int set_event(int ep_fd, int event) {
+        int set_event(int event) {
             struct epoll_event ev;
             ev.events = event;
             ev.data.fd = fd_;
-            if (epoll_ctl(ep_fd, EPOLL_CTL_ADD, fd_, &ev) < 0)
+            if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, fd_, &ev) < 0)
             {
                 perror("epoll_ctl");
                 return -1;
@@ -156,6 +160,7 @@ class client_sock
         }
 
     private:
+        int ae_fd_;
         int fd_;
         int state_;
         char* buf_;
