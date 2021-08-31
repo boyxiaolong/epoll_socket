@@ -3,6 +3,8 @@
 
 编译：需要安装scons，然后cd epoll_socket,执行scons即可
 
+暂时只支持一个epoll一个Server，监听一个端口，处理多个客户端连接
+
 TODO:
 
 1. API整理
