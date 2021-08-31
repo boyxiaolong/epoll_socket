@@ -1,32 +1,32 @@
 #include "stdio.h"
-#include "client_sock.h"
-#include "server.h"
 #include "signal.h"
 #include "pthread.h"
-#include "log.h"
+
+#include "include/server.h"
+#include "include/log.h"
 
 bool is_running = true;
 static void ctrl_handler(int sig){
-    printf("ctrl+c\n");
+    LOG("ctrl+c");
     is_running = false;
 }
 
 static void* sock_thread_handler(void* ser){
     if (NULL == ser) {
-        printf("thread error");
+        LOG("thread error");
         return NULL;
     }
     
     Server* pser = (Server*)ser;
     int res = pser->init_ae();
     if (res < 0) {
-        exit(-1);
+        LOG("init_ae error");
         return NULL;
     }
     
     res = pser->create_server_sock("0.0.0.0", 9999);
     if (res < 0) {
-        printf("create error\n");
+        LOG("create error");
         return NULL;
     }
 

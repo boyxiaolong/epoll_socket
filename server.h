@@ -1,10 +1,16 @@
 #ifndef _server_h__
 #define _server_h__
-
+#include "stdio.h"
+#include <sys/epoll.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include "stdlib.h"
+#include "netinet/in.h"
+#include "string.h"
+#include "unistd.h"
 #include <fcntl.h>
 #include <errno.h>
 #include <map>
-#include <string>
 #include "client_sock.h"
 
 #define max_events 100
@@ -13,15 +19,15 @@
 class Server
 {
     public:
+        typedef std::map<int, client_sock*> socket_map;
         Server();
-
         ~Server();
 
         void clear_data();
 
         int init_ae();
 
-        virtual int create_server_sock(const char* ip, uint16_t port);
+        virtual int create_server_sock();
 
         virtual int ae_accept();
 
@@ -31,13 +37,14 @@ class Server
 
         virtual int ae_poll();
 
-        void set_running_flag(bool flag) { is_running_ = flag; }
+        void set_running_flag(bool flag){
+            is_running_ = flag;
+        }
         
     private:
 
         int ae_fd_;
 
-        typedef std::map<int, client_sock*> socket_map;
         client_sock* pserver_sock_;
 
         int listen_fd_;
