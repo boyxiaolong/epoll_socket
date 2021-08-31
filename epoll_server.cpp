@@ -6,6 +6,8 @@
 #include "include/server.h"
 #include "include/log.h"
 
+#include <memory>
+
 bool is_running = true;
 static void ctrl_handler(int sig){
     LOG("ctrl+c");
@@ -37,16 +39,27 @@ static void* sock_thread_handler(void* ser){
 
 int main() {
     signal(SIGINT, ctrl_handler);
-    Server* pser = new Server;
+    std::unique_ptr<Server> pser(new Server);
+    if (NULL == pser) {
+        LOG("create server error");
+        return -1;
+    }
+
     pthread_t t;
-    pthread_create(&t, NULL, sock_thread_handler, (void*)pser);
+    pthread_create(&t, NULL, sock_thread_handler, (void*)pser.get());
+
     while (is_running) {
         sleep(1);
     }
+
     LOG("try to stop server");
+
     pser->set_running_flag(false);
+
     pthread_join(t, NULL);
+
     pser->clear_data();
-    delete pser;
+
     LOG("finish main");
+    return 0;
 }
