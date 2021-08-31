@@ -7,11 +7,8 @@
 #include <string>
 #include "client_sock.h"
 
-#define max_events 100
-#define max_buff 1024
-#define SERVER_PORT 9999
-class Server
-{
+class Server {
+    
     public:
         Server();
 

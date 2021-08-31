@@ -12,6 +12,9 @@
 
 #include "../include/log.h"
 
+#define max_events 100
+#define max_buff 1024
+
 Server::Server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL) {
 
 }

@@ -1,18 +1,18 @@
 #ifndef _client_sock_h__
 #define _client_sock_h__
 
-class client_sock
-{
+class client_sock {
+    
     public:
         client_sock(int ae_fd, int fd);
         
         ~client_sock();
         
+        virtual void process_data();
+
         char* get_data();
 
         int get_left_length();
-
-        void process_data();
 
         void add_pos(int length);
 
