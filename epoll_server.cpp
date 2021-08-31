@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "signal.h"
 #include "pthread.h"
+#include <unistd.h>
 
 #include "include/server.h"
 #include "include/log.h"
