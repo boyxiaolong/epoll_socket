@@ -1,11 +1,9 @@
 #ifndef _server_h__
 #define _server_h__
 
-#include <fcntl.h>
-#include <errno.h>
 #include <map>
-#include <string>
-#include "client_sock.h"
+
+class client_sock;
 
 class Server {
     

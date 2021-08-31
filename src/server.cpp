@@ -9,8 +9,12 @@
 #include "string.h"
 #include "unistd.h"
 #include "netdb.h"
+#include <fcntl.h>
 
 #include "../include/log.h"
+#include "../include/client_sock.h"
+
+#include <string>
 
 #define max_events 100
 #define max_buff 1024
