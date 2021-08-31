@@ -26,13 +26,19 @@ Server::~Server() {
 void Server::clear_data() {
     for (socket_map::iterator i = socket_map_.begin(); i != socket_map_.end(); ++i) {
         client_sock* ps = i->second;
-        if (ps) {
-            ps->close_sock();
-            LOG("close client %d", ps->get_fd());
-            delete ps;
+
+        if (NULL == ps) {
+            continue;
         }
+        
+        LOG("close client %d", ps->get_fd());
+
+        ps->close_sock();
+        
+        delete ps;
     }
     socket_map_.clear();
+
     if (listen_fd_ > 0) {
         pserver_sock_->close_sock();
         listen_fd_ = 0;
@@ -40,19 +46,23 @@ void Server::clear_data() {
     }
 
     LOG("begin close ae_fd");
+
     if (ae_fd_ > 0) {
         close(ae_fd_);
         ae_fd_ = 0;
     }
+
     LOG("server clear_data finish");
 }
 
 int Server::init_ae() {
     ae_fd_ = epoll_create(max_events);
+
     if (ae_fd_ < 0) {
         LOG("error epoll_create");
         return -1;
     }
+
     return 0;
 }
 
