@@ -57,7 +57,7 @@ int Server::init_ae() {
     return 0;
 }
 
-int Server::create_server_sock(char* ip, uint16_t port) {
+int Server::create_server_sock(const char* ip, uint16_t port) {
     struct addrinfo serv_addr;
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.ai_family = AF_INET;

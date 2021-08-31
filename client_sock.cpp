@@ -5,47 +5,39 @@
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
 , max_length(16)
-, cur_pos(0)
-{
+, cur_pos(0) {
     buf_ = new char[max_length];
 }
-client_sock::~client_sock()
-{
+
+client_sock::~client_sock() {
     LOG("fd %d dtor", fd_);
 
-    if (NULL != buf_)
-    {
+    if (NULL != buf_) {
         delete []buf_;
     }
 
-    if (fd_ > 0)
-    {
+    if (fd_ > 0) {
         close_sock();
     }
 }
         
-char* client_sock::get_data()
-{
+char* client_sock::get_data() {
     return buf_+cur_pos;
 }
 
-int client_sock::get_left_length()
-{
+int client_sock::get_left_length() {
     return max_length-cur_pos;
 }
 
-void client_sock::process_data()
-{
+void client_sock::process_data() {
     //just f test
     LOG("get data length %d data:%s", cur_pos, std::string(buf_, cur_pos).c_str());
     cur_pos = 0;
 }
 
-void client_sock::add_pos(int length)
-{
+void client_sock::add_pos(int length) {
     cur_pos += length;
-    if (get_left_length() < 1)
-    {
+    if (get_left_length() < 1) {
         int new_length = max_length*2;
         char* new_data = new char[new_length];
         memcpy(new_data, buf_, max_length);
@@ -56,14 +48,12 @@ void client_sock::add_pos(int length)
     }
 }
 
-int client_sock::read_data(){
+int client_sock::read_data() {
     int readn = 0;
     bool is_read_error = false;
-    while (true)
-    {
+    while (true) {
         int nread = read(fd_, get_data(), get_left_length());
-        if (nread < 0)
-        {
+        if (nread < 0) {
             if (errno == EAGAIN)
             {
                 LOG("fd %d read end!", fd_);
@@ -74,15 +64,12 @@ int client_sock::read_data(){
             is_read_error = true;
             break;
         }
-        if (nread == 0)
-        {
-            if (readn == 0)
-            {
+        if (nread == 0) {
+            if (readn == 0) {
                 LOG("read error");
                 is_read_error = true;
             }
-            else
-            {
+            else {
                 LOG("readnum 0 so read end");
             }
             
@@ -94,8 +81,7 @@ int client_sock::read_data(){
         LOG("readnum:%d", nread);
     }
                 
-    if (is_read_error)
-    {
+    if (is_read_error) {
         LOG("is_read_error");
         return -1;
     }
@@ -133,8 +119,7 @@ int client_sock::set_event(int event) {
     struct epoll_event ev;
     ev.events = event;
     ev.data.fd = fd_;
-    if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, fd_, &ev) < 0)
-    {
+    if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, fd_, &ev) < 0) {
         LOG("error epoll_ctl");
         return -1;
     }

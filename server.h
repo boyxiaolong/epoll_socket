@@ -21,7 +21,7 @@ class Server
 
         int init_ae();
 
-        virtual int create_server_sock(char* ip, uint16_t port);
+        virtual int create_server_sock(const char* ip, uint16_t port);
 
         virtual int ae_accept();
 

@@ -12,23 +12,20 @@ static void ctrl_handler(int sig){
 }
 
 static void* sock_thread_handler(void* ser){
-    if (NULL == ser)
-    {
+    if (NULL == ser) {
         printf("thread error");
         return NULL;
     }
     
     Server* pser = (Server*)ser;
     int res = pser->init_ae();
-    if (res < 0)
-    {
+    if (res < 0) {
         exit(-1);
         return NULL;
     }
     
     res = pser->create_server_sock("0.0.0.0", 9999);
-    if (res < 0)
-    {
+    if (res < 0) {
         printf("create error\n");
         return NULL;
     }
@@ -36,14 +33,13 @@ static void* sock_thread_handler(void* ser){
     pser->ae_poll();
     return NULL;
 }
-int main()
-{
+
+int main() {
     signal(SIGINT, ctrl_handler);
     Server* pser = new Server;
     pthread_t t;
     pthread_create(&t, NULL, sock_thread_handler, (void*)pser);
-    while (is_running)
-    {
+    while (is_running) {
         sleep(1);
     }
     LOG("try to stop server");
