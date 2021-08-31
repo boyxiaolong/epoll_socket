@@ -1,5 +1,6 @@
 #include "client_sock.h"
 #include "log.h"
+#include <string>
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
@@ -10,6 +11,8 @@ client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 }
 client_sock::~client_sock()
 {
+    LOG("fd %d dtor", fd_);
+
     if (NULL != buf_)
     {
         delete []buf_;
@@ -19,8 +22,6 @@ client_sock::~client_sock()
     {
         close_sock();
     }
-    
-    LOG("fd %d dtor", fd_);
 }
         
 char* client_sock::get_data()
@@ -36,12 +37,7 @@ int client_sock::get_left_length()
 void client_sock::process_data()
 {
     //just f test
-    if (get_left_length() > 0)
-    {
-        *(buf_+cur_pos+1) = '\0';
-    }
-    
-    LOG("get data length %d data:%s", cur_pos, buf_);
+    LOG("get data length %d data:%s", cur_pos, std::string(buf_, cur_pos).c_str());
     cur_pos = 0;
 }
 
