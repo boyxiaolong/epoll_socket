@@ -25,7 +25,7 @@ static void* sock_thread_handler(void* ser){
         return NULL;
     }
     
-    res = pser->create_server_sock();
+    res = pser->create_server_sock("0.0.0.0", 9999);
     if (res < 0)
     {
         printf("create error\n");

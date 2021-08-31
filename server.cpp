@@ -1,5 +1,15 @@
 #include "server.h"
 
+#include "stdio.h"
+#include <sys/epoll.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include "stdlib.h"
+#include "netinet/in.h"
+#include "string.h"
+#include "unistd.h"
+#include "netdb.h"
+
 Server::Server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL) {
 
 }
@@ -45,29 +55,36 @@ int Server::init_ae() {
     return 0;
 }
 
-int Server::create_server_sock() {
-    listen_fd_ = socket(AF_INET, SOCK_STREAM, 0);
+int Server::create_server_sock(char* ip, uint16_t port) {
+    struct addrinfo serv_addr;
+    memset(&serv_addr, 0, sizeof(serv_addr));
+    serv_addr.ai_family = AF_INET;
+    serv_addr.ai_socktype = SOCK_STREAM;
+    serv_addr.ai_protocol = IPPROTO_TCP;
+    listen_fd_ = socket(serv_addr.ai_family, serv_addr.ai_socktype, 0);
     if (listen_fd_ < 1) 
     {
-        perror("socket create");
+        printf("socket create\n");
         return -1;    
     }
 
-    pserver_sock_ = new client_sock(ae_fd_, listen_fd_);
+    struct addrinfo* real_server_info = NULL;
+    char port_str[6];
+    snprintf(port_str, 6, "%d", port);
+    int res = getaddrinfo(ip, port_str, &serv_addr, &real_server_info);
+    if (res < 0)
+    {
+        printf("getaddrinfo error %d\n", res);
+        close(listen_fd_);
+        return -1;
+    }
 
-    pserver_sock_->set_noblock();
-    pserver_sock_->set_nodelay();
-    struct sockaddr_in serv_addr;
-    memset(&serv_addr, 0, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons (SERVER_PORT);
-    serv_addr.sin_addr.s_addr = htonl (INADDR_ANY);
-    
-    printf("begin bind on port %d\n", SERVER_PORT);
-    int ret = bind(listen_fd_, (struct sockaddr *) (&serv_addr), sizeof(serv_addr));
+    printf("begin bind on port %d\n", port);
+    int ret = bind(listen_fd_, (struct sockaddr *) (real_server_info->ai_addr), real_server_info->ai_addrlen);
     if (ret < 0)
     {
-        perror("bind");
+        printf("bind\n");
+        close(listen_fd_);
         return -1;
     }
     printf("bind success\n");
@@ -75,11 +92,16 @@ int Server::create_server_sock() {
     ret = listen(listen_fd_, max_events);
     if (ret < 0)
     {
-        perror("listen");
+        printf("listen error\n");
+        close(listen_fd_);
         return -1;
     }
+
     printf("listen success %d\n", listen_fd_);
 
+    pserver_sock_ = new client_sock(ae_fd_, listen_fd_);
+    pserver_sock_->set_noblock();
+    pserver_sock_->set_nodelay();
     pserver_sock_->set_event(EPOLLIN);
 }
 
