@@ -2,7 +2,7 @@
 #define logic_protobuf_client_h_
 #include "../include/client_sock.h"
 
-class protobuf_client : client_sock {
+class protobuf_client : public client_sock {
 
 public:
 

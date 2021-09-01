@@ -31,6 +31,7 @@ class server {
 
         void set_running_flag(bool flag) { is_running_ = flag; }
 
+        //创建client
         virtual client_sock* on_create_client(int ae_fd, int new_conn_fd);
 
     private:

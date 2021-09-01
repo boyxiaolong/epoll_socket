@@ -3,11 +3,15 @@
 
 #include "../include/server.h"
 
-class protobuf_server : server {
+class client_sock;
+
+class protobuf_server : public server {
 
 public:
 
     protobuf_server();
 
+
+    virtual client_sock* on_create_client(int ae_fd, int new_conn_fd);
 };
 #endif
