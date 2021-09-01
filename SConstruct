@@ -15,10 +15,11 @@ all_dirs = list_dir('./')
 print(all_dirs)
 for dir in all_dirs:
 	obj += Glob(dir + '/*.cpp')
+	obj += Glob(dir + '/*.cc')
 
 #lib1 = File('async-redis-cli/unix-include/lib/libevent.a')
 path= ['/bin', '/usr/bin', '/opt/rh/devtoolset-8/root/usr/bin']
 env = Environment(ENV={'PATH':path})
 env.MergeFlags(inc_flags)
 env.MergeFlags(cc_flags)
-env.Program('epoll_test', list(obj), LIBS=['pthread'])
+env.Program('epoll_test', list(obj), LIBS=['pthread','protobuf'])
