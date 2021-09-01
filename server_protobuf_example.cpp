@@ -76,14 +76,30 @@ void naive_client_for_test() {
     
     pc->send_data(psend_data, total_size);
 
-    //pc->send_data(psend_data, total_size);
-
     delete []psend_data;
 }
 
-int main() {
-    
+enum program_type_enum {
+    program_type_server = 0,
+    program_type_client = 1
+};
+
+int main(int argc, char* argv[]) {
     signal(SIGINT, ctrl_handler);
+
+    int program_type = 0;
+
+    if (argc > 1)
+    {
+        program_type = atoi(argv[1]);
+        LOG("program_type %d", program_type); 
+    }
+    
+    if (program_type_client == program_type) {
+        naive_client_for_test();
+        return 0;
+    }
+    
     std::unique_ptr<server> pser(new protobuf_server);
     if (NULL == pser) {
         LOG("create server error");
@@ -92,8 +108,6 @@ int main() {
 
     pthread_t t;
     pthread_create(&t, NULL, sock_thread_handler, (void*)pser.get());
-
-    naive_client_for_test();
     
     while (is_running) {
         sleep(1);
