@@ -64,8 +64,9 @@ int protobuf_client::handle_msg(int msg_id, const char* pdata, int length) {
             LOG("login account_id %s device_id %d", req_login_msg.account_id().c_str(), req_login_msg.device_id());
 
             game::ResLogin res_login_msg;
+            res_login_msg.set_msg_id(game::eMsg_ResLogin);
             res_login_msg.set_actor_id(11);
-
+            send_pb_msg(&res_login_msg, res_login_msg.msg_id());
         }
         break;
     
