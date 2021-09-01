@@ -5,6 +5,8 @@
 
 #include "include/server.h"
 #include "include/log.h"
+#include "logic/protobuf_client.h"
+#include "logic/protobuf_server.h"
 
 #include <memory>
 
@@ -42,7 +44,7 @@ static void* sock_thread_handler(void* ser){
 int main() {
     example::Login login_msg;
     signal(SIGINT, ctrl_handler);
-    std::unique_ptr<server> pser(new server);
+    std::unique_ptr<server> pser(new protobuf_server);
     if (NULL == pser) {
         LOG("create server error");
         return -1;
