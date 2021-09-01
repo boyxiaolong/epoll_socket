@@ -14,7 +14,6 @@ protobuf_client::protobuf_client(int ae_fd, int fd)
 
 int protobuf_client::read_data() {
     LOG("begin read");
-    int readn = 0;
     
     int nread = 0;
     int msg_length = 0;

@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "net_msg/login.pb.h"
 
@@ -43,14 +44,12 @@ static void* sock_thread_handler(void* ser){
     return NULL;
 }
 
-void naive_client_for_test() {
-    sleep(3);
-
+static void* client_handler(void* ser) {
     std::unique_ptr<protobuf_client> pc(new protobuf_client(0, 0));
     int res = pc->sync_connect("0.0.0.0", 9999);
     if (res != 0) {
         LOG("connect error");
-        return;
+        return NULL;
     }
 
     pc->set_noblock();
@@ -77,6 +76,23 @@ void naive_client_for_test() {
     pc->send_data(psend_data, total_size);
 
     delete []psend_data;
+    return NULL;
+}
+
+void naive_client_for_test(int thread_num) {
+    std::vector< pthread_t*> pvec;
+    for (size_t i = 0; i < thread_num; i++){
+        pthread_t* pt = new pthread_t;
+        pthread_create(pt, NULL, client_handler, NULL);
+        pvec.push_back(pt);
+    }
+
+    for (size_t i = 0; i < thread_num; i++)
+    {
+        pthread_t* pt = pvec[i];
+        pthread_join(*pt, NULL);
+        delete pt;
+    }
 }
 
 enum program_type_enum {
@@ -89,14 +105,18 @@ int main(int argc, char* argv[]) {
 
     int program_type = 0;
 
-    if (argc > 1)
-    {
+    if (argc > 1) {
         program_type = atoi(argv[1]);
         LOG("program_type %d", program_type); 
     }
     
     if (program_type_client == program_type) {
-        naive_client_for_test();
+        int thread_num = 0;
+        if (argc > 2) {
+            thread_num = atoi(argv[2]);
+        }
+        
+        naive_client_for_test(thread_num);
         return 0;
     }
     
