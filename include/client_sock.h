@@ -52,11 +52,11 @@ class client_sock {
 
     protected:
         bool is_connected_ = false;
-        int ae_fd_;
-        int fd_;
-        int state_;
-        char* buf_;
-        int max_length_;
-        int cur_pos;
+        int ae_fd_ = 0;
+        int fd_ = 0;
+        int state_ = 0;
+        char* buf_ = nullptr;
+        int max_length_ = 4056;
+        int cur_pos_ = 0;
 };
 #endif

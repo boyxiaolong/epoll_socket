@@ -19,7 +19,7 @@
 #define max_events 100
 #define max_buff 1024
 
-server::server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL) {
+server::server() {
 
 }
 

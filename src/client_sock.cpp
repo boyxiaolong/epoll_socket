@@ -19,9 +19,7 @@
 #include "../include/log.h"
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
-, fd_(fd)
-, max_length_(4056)
-, cur_pos(0) {
+, fd_(fd) {
     if (fd_ > 0) {
         is_connected_ = true;
     }
@@ -41,21 +39,20 @@ client_sock::~client_sock() {
 }
         
 char* client_sock::get_data() {
-    return buf_+cur_pos;
+    return buf_+cur_pos_;
 }
 
 int client_sock::get_left_length() {
-    return max_length_-cur_pos;
+    return max_length_-cur_pos_;
 }
 
 void client_sock::process_data() {
     //just f test
-    LOG("get data length %d data:%s", cur_pos, std::string(buf_, cur_pos).c_str());
-    cur_pos = 0;
+    cur_pos_ = 0;
 }
 
 void client_sock::add_pos(int length) {
-    cur_pos += length;
+    cur_pos_ += length;
 }
 
 int client_sock::read_data() {

@@ -42,18 +42,18 @@ class server {
         
     private:
 
-        int ae_fd_;
+        int ae_fd_ = 0;
 
         typedef std::map<int, client_sock*> socket_map;
-        client_sock* pserver_sock_;
+        client_sock* pserver_sock_ = nullptr;
 
-        int listen_fd_;
+        int listen_fd_ = 0;
 
-        int max_timeout_ms_;
+        int max_timeout_ms_ = 100;
 
         socket_map socket_map_;
 
-        bool is_running_;
+        bool is_running_ = true;
 };
 
 #endif
