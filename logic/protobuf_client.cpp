@@ -56,6 +56,8 @@ int protobuf_client::read_data() {
     }
 
     process_data();
+
+    clear_data();
     return 0;
 }
 
@@ -71,8 +73,7 @@ int protobuf_client::handle_msg(int msg_id, std::string& msg) {
     case example::eMsgToSFromC_Login: {
             example::Login login_msg;
             login_msg.ParseFromString(msg);
-            LOG("login msg %s size %d account_id %s device_id %d"
-            , msg.c_str(), msg.size(), login_msg.account_id().c_str(), login_msg.device_id());
+            LOG("login account_id %s device_id %d", login_msg.account_id().c_str(), login_msg.device_id());
         }
         break;
     
@@ -81,4 +82,11 @@ int protobuf_client::handle_msg(int msg_id, std::string& msg) {
         break;
     }
     return 0;
+}
+
+void protobuf_client::clear_data() {
+    is_read_header_ = false;
+    header_size_ = 0;
+    msg_length_ = 0;
+    msg_id_ = -1;
 }

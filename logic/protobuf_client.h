@@ -16,6 +16,8 @@ public:
 
     virtual int handle_msg(int msg_id, std::string& msg);
 
+    void clear_data();
+
 private:
     bool is_read_header_ = false;
 
