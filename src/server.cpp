@@ -182,6 +182,8 @@ void server::rm_client_sock(int fd) {
 }
 
 int server::ae_poll() {
+    LOG("begin poll");
+    
     struct epoll_event events[max_events];
     while (is_running_) {
         //printf("begin epoll\n");
