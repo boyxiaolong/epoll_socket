@@ -36,7 +36,7 @@ int protobuf_client::read_data() {
        expand_buf();
     }
     
-    nread = read(fd_, buf_, max_length_);
+    nread = read(fd_, buf_, left_msg_len);
     if (nread != left_msg_len) {
         LOG("read header error");
         return -1;
