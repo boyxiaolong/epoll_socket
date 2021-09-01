@@ -196,6 +196,7 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
     }
 
     res = connect(conn_fd, (struct sockaddr *) (real_server_info->ai_addr), real_server_info->ai_addrlen);
+    freeaddrinfo(real_server_info);
     if (res != 0) {
         LOG("connect error");
         return -1;
