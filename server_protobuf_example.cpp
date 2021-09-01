@@ -63,6 +63,9 @@ int main() {
         LOG("connect error");
     }
 
+    pc->set_noblock();
+    pc->set_nodelay();
+
     example::Login login_msg;
     login_msg.set_msg_id(example::eMsgToSFromC_Login);
     login_msg.set_account_id("allen");
@@ -82,6 +85,9 @@ int main() {
     memcpy(psend_data + 8, msg_str.c_str(), msg_size);
     
     pc->send_data(psend_data, total_size);
+
+    //pc->send_data(psend_data, total_size);
+
     delete []psend_data;
     
     while (is_running) {
