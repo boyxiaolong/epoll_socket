@@ -20,7 +20,7 @@
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
-, max_length_(1024*4)
+, max_length_(4056)
 , cur_pos(0) {
     if (fd_ > 0) {
         is_connected_ = true;
@@ -216,7 +216,7 @@ void client_sock::expand_buf() {
     char* new_data = new char[new_length];
     memcpy(new_data, buf_, max_length_);
     max_length_ = new_length;
-    delete buf_;
+    delete []buf_;
     buf_ = new_data;
     LOG("resize data %d", new_length);
 }
