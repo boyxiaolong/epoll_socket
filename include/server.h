@@ -5,12 +5,12 @@
 
 class client_sock;
 
-class Server {
+class server {
     
     public:
-        Server();
+        server();
 
-        ~Server();
+        ~server();
 
         void clear_data();
 

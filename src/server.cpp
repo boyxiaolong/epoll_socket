@@ -19,15 +19,15 @@
 #define max_events 100
 #define max_buff 1024
 
-Server::Server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL) {
+server::server():is_running_(true),max_timeout_ms_(100),pserver_sock_(NULL) {
 
 }
 
-Server::~Server() {
+server::~server() {
     clear_data();
 }
 
-void Server::clear_data() {
+void server::clear_data() {
     for (socket_map::iterator i = socket_map_.begin(); i != socket_map_.end(); ++i) {
         client_sock* ps = i->second;
 
@@ -59,7 +59,7 @@ void Server::clear_data() {
     LOG("server clear_data finish");
 }
 
-int Server::init_ae() {
+int server::init_ae() {
     ae_fd_ = epoll_create(max_events);
 
     if (ae_fd_ < 0) {
@@ -70,7 +70,7 @@ int Server::init_ae() {
     return 0;
 }
 
-int Server::create_server_sock(const char* ip, uint16_t port) {
+int server::create_server_sock(const char* ip, uint16_t port) {
     struct addrinfo serv_addr;
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.ai_family = AF_INET;
@@ -118,7 +118,7 @@ int Server::create_server_sock(const char* ip, uint16_t port) {
     return 0;
 }
 
-int Server::_ae_accept() {
+int server::_ae_accept() {
     LOG("begin ae_accept");
     int res = 0;
     do {
@@ -154,7 +154,7 @@ int Server::_ae_accept() {
     return res;
 }
 
-client_sock* Server::get_sock_ps(int cur_fd) {
+client_sock* server::get_sock_ps(int cur_fd) {
     socket_map::iterator iter = socket_map_.find(cur_fd);
     if (iter == socket_map_.end()) {
         return NULL;
@@ -163,7 +163,7 @@ client_sock* Server::get_sock_ps(int cur_fd) {
     return iter->second;
 }
 
-void Server::rm_client_sock(int fd) {
+void server::rm_client_sock(int fd) {
     socket_map::iterator iter = socket_map_.find(fd);
     if (iter == socket_map_.end()) {
         return;
@@ -181,7 +181,7 @@ void Server::rm_client_sock(int fd) {
     LOG("delete fd:%d client close socket", fd);
 }
 
-int Server::ae_poll() {
+int server::ae_poll() {
     struct epoll_event events[max_events];
     while (is_running_) {
         //printf("begin epoll\n");
@@ -225,7 +225,7 @@ int Server::ae_poll() {
 }
 
 
-client_sock* Server::on_create_client(int ae_fd, int new_conn_fd) {
+client_sock* server::on_create_client(int ae_fd, int new_conn_fd) {
     client_sock* ps = new client_sock(ae_fd_, new_conn_fd);
     return ps;
 }

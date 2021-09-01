@@ -22,7 +22,7 @@ static void* sock_thread_handler(void* ser){
         return NULL;
     }
     
-    Server* pser = (Server*)ser;
+    server* pser = (server*)ser;
     int res = pser->init_ae();
     if (res < 0) {
         LOG("init_ae error");
@@ -42,7 +42,7 @@ static void* sock_thread_handler(void* ser){
 int main() {
     example::Login login_msg;
     signal(SIGINT, ctrl_handler);
-    std::unique_ptr<Server> pser(new Server);
+    std::unique_ptr<server> pser(new server);
     if (NULL == pser) {
         LOG("create server error");
         return -1;
