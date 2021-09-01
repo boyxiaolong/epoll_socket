@@ -8,6 +8,8 @@
 
 #include <memory>
 
+#include "net_msg/login.pb.h"
+
 bool is_running = true;
 static void ctrl_handler(int sig){
     LOG("ctrl+c");
@@ -38,6 +40,7 @@ static void* sock_thread_handler(void* ser){
 }
 
 int main() {
+    protobuf_login_2eproto::example::Login login_msg;
     signal(SIGINT, ctrl_handler);
     std::unique_ptr<Server> pser(new Server);
     if (NULL == pser) {

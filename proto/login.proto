@@ -1,0 +1,6 @@
+syntax="proto3";
+package example;
+message Login {
+  string account_id = 1;
+  int64 device_id = 2;
+}
