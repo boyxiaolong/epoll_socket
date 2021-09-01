@@ -20,7 +20,8 @@
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
-, buf_(max_length_, 0) {
+, buf_(max_length_, 0)
+, send_buf_(max_length_, 0) {
     if (fd_ > 0) {
         is_connected_ = true;
     }
