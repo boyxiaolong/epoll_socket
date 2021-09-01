@@ -11,16 +11,25 @@ protobuf_client::protobuf_client(int ae_fd, int fd)
     }
 
 int protobuf_client::read_data() {
-
+    LOG("begin read");
     int readn = 0;
     bool is_read_error = false;
     while (true) {
         int nread = 0;
         if (!is_read_header_) {
             nread = read(fd_, &msg_length_, 4);
+            if (nread != 4) {
+                LOG("read header error");
+                is_read_error = true;
+                break;
+            }
+
+            LOG("msg_length %d", msg_length_);
+            is_read_header_ = true;
         }
         else {
             int left_msg_len = msg_length_ - cur_pos;
+            LOG("left_msg_len %d", left_msg_len);
             nread = read(fd_, get_data(), left_msg_len);
         }
         
