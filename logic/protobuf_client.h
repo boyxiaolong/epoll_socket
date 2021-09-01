@@ -2,6 +2,8 @@
 #define logic_protobuf_client_h_
 #include "../include/client_sock.h"
 
+#include <string>
+
 class protobuf_client : public client_sock {
 
 public:
@@ -11,6 +13,8 @@ public:
     virtual int read_data();
 
     virtual void process_data();
+
+    virtual int handle_msg(int msg_id, std::string& msg);
 
 private:
     bool is_read_header_ = false;

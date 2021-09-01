@@ -5,6 +5,8 @@
 
 #include "../include/log.h"
 
+#include "../net_msg/login.pb.h"
+
 protobuf_client::protobuf_client(int ae_fd, int fd) 
     : client_sock(ae_fd, fd) {
 
@@ -72,6 +74,24 @@ int protobuf_client::read_data() {
 
 
 void protobuf_client::process_data() {
-    client_sock::process_data();
+    int msg_id = *(int*)(buf_+4);
+    std::string msg(buf_+8, cur_pos-8);
+    handle_msg(msg_id, msg);
 }
 
+int protobuf_client::handle_msg(int msg_id, std::string& msg) {
+    switch (msg_id)
+    {
+    case example::eMsgToSFromC_Login: {
+            example::Login login_msg;
+            login_msg.ParseFromString(msg);
+            LOG("login msg account_id %s device_id %d", login_msg.account_id().c_str(), login_msg.device_id());
+        }
+        break;
+    
+    default:
+        LOG("msgid %d not handle", msg_id);
+        break;
+    }
+    return 0;
+}
