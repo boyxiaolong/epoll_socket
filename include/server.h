@@ -12,6 +12,7 @@ class server {
 
         virtual ~server();
 
+        //清楚数据
         void clear_data();
 
         //初始化epoll
@@ -41,18 +42,22 @@ class server {
         int _ae_accept();
         
     private:
-
+        //epoll fd
         int ae_fd_ = 0;
 
         typedef std::map<int, client_sock*> socket_map;
+        //监听socket实例
         client_sock* pserver_sock_ = nullptr;
 
         int listen_fd_ = 0;
 
+        //最大延迟时间
         int max_timeout_ms_ = 100;
 
+        //连接map
         socket_map socket_map_;
 
+        //是否在运行
         bool is_running_ = true;
 };
 

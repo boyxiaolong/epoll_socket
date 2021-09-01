@@ -48,15 +48,29 @@ class client_sock {
     protected:
         void add_pos(int length);
 
+        //buf扩展
         void expand_buf();
 
     protected:
+        //是否已连接
         bool is_connected_ = false;
+
+        //epoll fd
         int ae_fd_ = 0;
+
+        //本socket fd
         int fd_ = 0;
+
+        //状态 todo
         int state_ = 0;
+
+        //数据cache
         char* buf_ = nullptr;
+
+        //buf最大长度
         int max_length_ = 4056;
+        
+        //buf当前位置
         int cur_pos_ = 0;
 };
 #endif

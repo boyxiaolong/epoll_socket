@@ -30,8 +30,9 @@ client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 client_sock::~client_sock() {
     LOG("fd %d dtor", fd_);
 
-    if (NULL != buf_) {
+    if (nullptr != buf_) {
         delete []buf_;
+        buf_ = nullptr;
     }
 
     
@@ -39,11 +40,11 @@ client_sock::~client_sock() {
 }
         
 char* client_sock::get_data() {
-    return buf_+cur_pos_;
+    return buf_+ cur_pos_;
 }
 
 int client_sock::get_left_length() {
-    return max_length_-cur_pos_;
+    return max_length_ - cur_pos_;
 }
 
 void client_sock::process_data() {
@@ -57,7 +58,9 @@ void client_sock::add_pos(int length) {
 
 int client_sock::read_data() {
     int readn = 0;
+    
     bool is_read_error = false;
+
     while (true) {
         int nread = read(fd_, get_data(), get_left_length());
         if (nread < 0) {
