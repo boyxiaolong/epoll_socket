@@ -43,10 +43,9 @@ void server::clear_data() {
     }
     socket_map_.clear();
 
-    if (listen_fd_ > 0) {
+    if (pserver_sock_) {
         pserver_sock_->close_sock();
         listen_fd_ = 0;
-        delete pserver_sock_;
     }
 
     LOG("begin close ae_fd");
@@ -111,7 +110,7 @@ int server::create_server_sock(const char* ip, uint16_t port) {
 
     LOG("listen success %d", listen_fd_);
 
-    pserver_sock_ = new client_sock(ae_fd_, listen_fd_);
+    pserver_sock_ = std::make_unique<client_sock>(ae_fd_, listen_fd_);
     pserver_sock_->set_noblock();
     pserver_sock_->set_nodelay();
     pserver_sock_->set_event(EPOLLIN);

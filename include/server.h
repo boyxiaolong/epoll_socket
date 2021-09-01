@@ -2,6 +2,7 @@
 #define _server_h__
 
 #include <map>
+#include <memory>
 
 class client_sock;
 
@@ -47,7 +48,7 @@ class server {
 
         typedef std::map<int, client_sock*> socket_map;
         //监听socket实例
-        client_sock* pserver_sock_ = nullptr;
+        std::unique_ptr<client_sock> pserver_sock_;
 
         int listen_fd_ = 0;
 

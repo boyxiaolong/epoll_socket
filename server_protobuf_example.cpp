@@ -62,7 +62,7 @@ static void* client_handler(void* ser) {
     login_msg.set_device_id(111);
 
     std::string msg_str = login_msg.SerializeAsString();
-
+    
     int msg_size = msg_str.size();
 
     LOG("login_msg size %d",  msg_size);
