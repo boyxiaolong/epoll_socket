@@ -208,3 +208,12 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
     return 0;
 }
 
+
+int client_sock::send_data(char* pdata, int length) {
+    int n = write(fd_, pdata, length);
+    if (n != length) {
+        return -1;
+    }
+    
+    return 0;
+}
