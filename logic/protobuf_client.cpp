@@ -5,7 +5,8 @@
 
 #include "../include/log.h"
 
-#include "../net_msg/login.pb.h"
+#include "../net_msg/req_login.pb.h"
+#include "../net_msg/msg_num.pb.h"
 
 protobuf_client::protobuf_client(int ae_fd, int fd) 
     : client_sock(ae_fd, fd) {
@@ -55,8 +56,8 @@ void protobuf_client::process_data() {
 int protobuf_client::handle_msg(int msg_id, std::string& msg) {
     switch (msg_id)
     {
-    case example::eMsgToSFromC_Login: {
-            example::Login login_msg;
+    case game::eMsg_ReqLogin : {
+            game::ReqLogin login_msg;
             login_msg.ParseFromString(msg);
             LOG("login account_id %s device_id %d", login_msg.account_id().c_str(), login_msg.device_id());
         }

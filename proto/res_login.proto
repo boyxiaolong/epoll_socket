@@ -1,0 +1,8 @@
+syntax="proto3";
+package game;
+
+message ResLogin {
+  int32 msg_id = 1;
+  string account_id = 2;
+  int64 actor_id = 3;
+}

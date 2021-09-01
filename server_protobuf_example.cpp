@@ -12,7 +12,8 @@
 #include <string>
 #include <vector>
 
-#include "net_msg/login.pb.h"
+#include "net_msg/req_login.pb.h"
+#include "net_msg/msg_num.pb.h"
 
 std::atomic<int> is_running(true);
 
@@ -55,8 +56,8 @@ static void* client_handler(void* ser) {
     pc->set_noblock();
     pc->set_nodelay();
 
-    example::Login login_msg;
-    login_msg.set_msg_id(example::eMsgToSFromC_Login);
+    game::ReqLogin login_msg;
+    login_msg.set_msg_id(game::eMsg_ReqLogin);
     login_msg.set_account_id("allen");
     login_msg.set_device_id(111);
 
