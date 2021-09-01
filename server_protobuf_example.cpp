@@ -86,7 +86,7 @@ int main() {
     
     pc->send_data(psend_data, total_size);
 
-    //pc->send_data(psend_data, total_size);
+    pc->send_data(psend_data, total_size);
 
     delete []psend_data;
     

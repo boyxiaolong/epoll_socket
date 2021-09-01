@@ -8,3 +8,7 @@
 可以定制自己的server，client，具体实例在/logic内，实现了简单的protobuf协议的server client.
 
 编译好后，可执行sh mem_check.sh 检测是否有内存泄漏.
+
+TODO:
+
+1. tcp消息(比如游戏中玩家消息)分包后，可以投递到work_thread去处理. 
