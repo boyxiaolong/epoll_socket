@@ -43,6 +43,7 @@ class client_sock {
         //同步连接
         int sync_connect(const char* ip, uint16_t port);
 
+        //发送数据
         int send_data(char* pdata, int length);
 
     protected:
