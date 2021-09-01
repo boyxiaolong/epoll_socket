@@ -215,5 +215,6 @@ int client_sock::send_data(char* pdata, int length) {
         return -1;
     }
     
+    LOG("send length %d success", length);
     return 0;
 }

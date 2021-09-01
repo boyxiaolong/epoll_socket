@@ -55,7 +55,7 @@ int protobuf_client::read_data() {
             
             break;
         }
-        LOG("scok %d read size %d left_size %d", fd_, nread, get_left_length());
+        LOG("sock %d read size %d left_size %d", fd_, nread, get_left_length());
         add_pos(nread);
         readn += nread;
         LOG("readnum:%d", nread);

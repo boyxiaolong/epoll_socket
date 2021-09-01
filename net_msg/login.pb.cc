@@ -46,6 +46,7 @@ void InitDefaults() {
 }
 
 ::google::protobuf::Metadata file_level_metadata[1];
+const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[1];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
@@ -53,6 +54,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::example::Login, msg_id_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::example::Login, account_id_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::example::Login, device_id_),
 };
@@ -68,7 +70,7 @@ void protobuf_AssignDescriptors() {
   AddDescriptors();
   AssignDescriptors(
       "login.proto", schemas, file_default_instances, TableStruct::offsets,
-      file_level_metadata, NULL, NULL);
+      file_level_metadata, file_level_enum_descriptors, NULL);
 }
 
 void protobuf_AssignDescriptorsOnce() {
@@ -85,11 +87,14 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\013login.proto\022\007example\".\n\005Login\022\022\n\naccou"
-      "nt_id\030\001 \001(\t\022\021\n\tdevice_id\030\002 \001(\003b\006proto3"
+      "\n\013login.proto\022\007example\"O\n\005Login\022\037\n\006msg_i"
+      "d\030\001 \001(\0162\017.example.MsgNum\022\022\n\naccount_id\030\002"
+      " \001(\t\022\021\n\tdevice_id\030\003 \001(\003*O\n\006MsgNum\022\026\n\022eMs"
+      "gToSFromC_Begin\020\000\022\026\n\022eMsgToSFromC_Login\020"
+      "\001\022\025\n\020eMsgToSFromC_End\020\347\007b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 78);
+      descriptor, 192);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "login.proto", &protobuf_RegisterTypes);
 }
@@ -106,12 +111,28 @@ struct StaticDescriptorInitializer {
 } static_descriptor_initializer;
 }  // namespace protobuf_login_2eproto
 namespace example {
+const ::google::protobuf::EnumDescriptor* MsgNum_descriptor() {
+  protobuf_login_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_login_2eproto::file_level_enum_descriptors[0];
+}
+bool MsgNum_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 999:
+      return true;
+    default:
+      return false;
+  }
+}
+
 
 // ===================================================================
 
 void Login::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int Login::kMsgIdFieldNumber;
 const int Login::kAccountIdFieldNumber;
 const int Login::kDeviceIdFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -131,13 +152,17 @@ Login::Login(const Login& from)
   if (from.account_id().size() > 0) {
     account_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.account_id_);
   }
-  device_id_ = from.device_id_;
+  ::memcpy(&device_id_, &from.device_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&msg_id_) -
+    reinterpret_cast<char*>(&device_id_)) + sizeof(msg_id_));
   // @@protoc_insertion_point(copy_constructor:example.Login)
 }
 
 void Login::SharedCtor() {
   account_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  device_id_ = GOOGLE_LONGLONG(0);
+  ::memset(&device_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&msg_id_) -
+      reinterpret_cast<char*>(&device_id_)) + sizeof(msg_id_));
 }
 
 Login::~Login() {
@@ -170,7 +195,9 @@ void Login::Clear() {
   (void) cached_has_bits;
 
   account_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  device_id_ = GOOGLE_LONGLONG(0);
+  ::memset(&device_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&msg_id_) -
+      reinterpret_cast<char*>(&device_id_)) + sizeof(msg_id_));
   _internal_metadata_.Clear();
 }
 
@@ -184,10 +211,25 @@ bool Login::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // string account_id = 1;
+      // .example.MsgNum msg_id = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_msg_id(static_cast< ::example::MsgNum >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // string account_id = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_account_id()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -200,10 +242,10 @@ bool Login::MergePartialFromCodedStream(
         break;
       }
 
-      // int64 device_id = 2;
-      case 2: {
+      // int64 device_id = 3;
+      case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
@@ -240,19 +282,25 @@ void Login::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string account_id = 1;
+  // .example.MsgNum msg_id = 1;
+  if (this->msg_id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->msg_id(), output);
+  }
+
+  // string account_id = 2;
   if (this->account_id().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->account_id().data(), static_cast<int>(this->account_id().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "example.Login.account_id");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->account_id(), output);
+      2, this->account_id(), output);
   }
 
-  // int64 device_id = 2;
+  // int64 device_id = 3;
   if (this->device_id() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->device_id(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->device_id(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -269,7 +317,13 @@ void Login::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string account_id = 1;
+  // .example.MsgNum msg_id = 1;
+  if (this->msg_id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->msg_id(), target);
+  }
+
+  // string account_id = 2;
   if (this->account_id().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->account_id().data(), static_cast<int>(this->account_id().length()),
@@ -277,12 +331,12 @@ void Login::SerializeWithCachedSizes(
       "example.Login.account_id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->account_id(), target);
+        2, this->account_id(), target);
   }
 
-  // int64 device_id = 2;
+  // int64 device_id = 3;
   if (this->device_id() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->device_id(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->device_id(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -302,18 +356,24 @@ size_t Login::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // string account_id = 1;
+  // string account_id = 2;
   if (this->account_id().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->account_id());
   }
 
-  // int64 device_id = 2;
+  // int64 device_id = 3;
   if (this->device_id() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->device_id());
+  }
+
+  // .example.MsgNum msg_id = 1;
+  if (this->msg_id() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->msg_id());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -350,6 +410,9 @@ void Login::MergeFrom(const Login& from) {
   if (from.device_id() != 0) {
     set_device_id(from.device_id());
   }
+  if (from.msg_id() != 0) {
+    set_msg_id(from.msg_id());
+  }
 }
 
 void Login::CopyFrom(const ::google::protobuf::Message& from) {
@@ -379,6 +442,7 @@ void Login::InternalSwap(Login* other) {
   account_id_.Swap(&other->account_id_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(device_id_, other->device_id_);
+  swap(msg_id_, other->msg_id_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 

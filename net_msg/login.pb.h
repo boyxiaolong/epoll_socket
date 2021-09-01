@@ -29,6 +29,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #define PROTOBUF_INTERNAL_EXPORT_protobuf_login_2eproto 
@@ -57,6 +58,28 @@ template<> ::example::Login* Arena::CreateMaybeMessage<::example::Login>(Arena*)
 }  // namespace google
 namespace example {
 
+enum MsgNum {
+  eMsgToSFromC_Begin = 0,
+  eMsgToSFromC_Login = 1,
+  eMsgToSFromC_End = 999,
+  MsgNum_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  MsgNum_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool MsgNum_IsValid(int value);
+const MsgNum MsgNum_MIN = eMsgToSFromC_Begin;
+const MsgNum MsgNum_MAX = eMsgToSFromC_End;
+const int MsgNum_ARRAYSIZE = MsgNum_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MsgNum_descriptor();
+inline const ::std::string& MsgNum_Name(MsgNum value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MsgNum_descriptor(), value);
+}
+inline bool MsgNum_Parse(
+    const ::std::string& name, MsgNum* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MsgNum>(
+    MsgNum_descriptor(), name, value);
+}
 // ===================================================================
 
 class Login : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:example.Login) */ {
@@ -146,9 +169,9 @@ class Login : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 
   // accessors -------------------------------------------------------
 
-  // string account_id = 1;
+  // string account_id = 2;
   void clear_account_id();
-  static const int kAccountIdFieldNumber = 1;
+  static const int kAccountIdFieldNumber = 2;
   const ::std::string& account_id() const;
   void set_account_id(const ::std::string& value);
   #if LANG_CXX11
@@ -160,11 +183,17 @@ class Login : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   ::std::string* release_account_id();
   void set_allocated_account_id(::std::string* account_id);
 
-  // int64 device_id = 2;
+  // int64 device_id = 3;
   void clear_device_id();
-  static const int kDeviceIdFieldNumber = 2;
+  static const int kDeviceIdFieldNumber = 3;
   ::google::protobuf::int64 device_id() const;
   void set_device_id(::google::protobuf::int64 value);
+
+  // .example.MsgNum msg_id = 1;
+  void clear_msg_id();
+  static const int kMsgIdFieldNumber = 1;
+  ::example::MsgNum msg_id() const;
+  void set_msg_id(::example::MsgNum value);
 
   // @@protoc_insertion_point(class_scope:example.Login)
  private:
@@ -172,6 +201,7 @@ class Login : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr account_id_;
   ::google::protobuf::int64 device_id_;
+  int msg_id_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_login_2eproto::TableStruct;
 };
@@ -186,7 +216,21 @@ class Login : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 #endif  // __GNUC__
 // Login
 
-// string account_id = 1;
+// .example.MsgNum msg_id = 1;
+inline void Login::clear_msg_id() {
+  msg_id_ = 0;
+}
+inline ::example::MsgNum Login::msg_id() const {
+  // @@protoc_insertion_point(field_get:example.Login.msg_id)
+  return static_cast< ::example::MsgNum >(msg_id_);
+}
+inline void Login::set_msg_id(::example::MsgNum value) {
+  
+  msg_id_ = value;
+  // @@protoc_insertion_point(field_set:example.Login.msg_id)
+}
+
+// string account_id = 2;
 inline void Login::clear_account_id() {
   account_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -239,7 +283,7 @@ inline void Login::set_allocated_account_id(::std::string* account_id) {
   // @@protoc_insertion_point(field_set_allocated:example.Login.account_id)
 }
 
-// int64 device_id = 2;
+// int64 device_id = 3;
 inline void Login::clear_device_id() {
   device_id_ = GOOGLE_LONGLONG(0);
 }
@@ -260,6 +304,18 @@ inline void Login::set_device_id(::google::protobuf::int64 value) {
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace example
+
+namespace google {
+namespace protobuf {
+
+template <> struct is_proto_enum< ::example::MsgNum> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::example::MsgNum>() {
+  return ::example::MsgNum_descriptor();
+}
+
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
 

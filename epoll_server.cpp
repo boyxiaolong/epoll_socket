@@ -9,6 +9,7 @@
 #include "logic/protobuf_server.h"
 
 #include <memory>
+#include <string>
 
 #include "net_msg/login.pb.h"
 
@@ -42,7 +43,7 @@ static void* sock_thread_handler(void* ser){
 }
 
 int main() {
-    example::Login login_msg;
+    
     signal(SIGINT, ctrl_handler);
     std::unique_ptr<server> pser(new protobuf_server);
     if (NULL == pser) {
@@ -60,6 +61,20 @@ int main() {
     if (res != 0) {
         LOG("connect error");
     }
+
+    example::Login login_msg;
+    login_msg.set_msg_id(example::eMsgToSFromC_Login);
+
+    std::string msg_str = login_msg.SerializeAsString();
+    int msg_size = msg_str.size();
+    int msg_id = login_msg.msg_id();
+    int total_size = 4 + msg_size;
+    char* psend_data = new char[total_size + 4];
+    memcpy(psend_data, &total_size, sizeof(total_size));
+    memcpy(psend_data, &msg_id, sizeof(msg_id));
+    memcpy(psend_data, msg_str.c_str(), msg_size);
+    pc->send_data(psend_data, total_size);
+    delete []psend_data;
     
     while (is_running) {
         sleep(1);
