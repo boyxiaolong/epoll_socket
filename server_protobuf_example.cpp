@@ -43,24 +43,14 @@ static void* sock_thread_handler(void* ser){
     return NULL;
 }
 
-int main() {
-    
-    signal(SIGINT, ctrl_handler);
-    std::unique_ptr<server> pser(new protobuf_server);
-    if (NULL == pser) {
-        LOG("create server error");
-        return -1;
-    }
-
-    pthread_t t;
-    pthread_create(&t, NULL, sock_thread_handler, (void*)pser.get());
-
+void naive_client_for_test() {
     sleep(3);
 
-    std::unique_ptr<protobuf_client> pc(new protobuf_client(pser->get_ae_fd(), 0));
+    std::unique_ptr<protobuf_client> pc(new protobuf_client(0, 0));
     int res = pc->sync_connect("0.0.0.0", 9999);
     if (res != 0) {
         LOG("connect error");
+        return;
     }
 
     pc->set_noblock();
@@ -86,9 +76,24 @@ int main() {
     
     pc->send_data(psend_data, total_size);
 
-    pc->send_data(psend_data, total_size);
+    //pc->send_data(psend_data, total_size);
 
     delete []psend_data;
+}
+
+int main() {
+    
+    signal(SIGINT, ctrl_handler);
+    std::unique_ptr<server> pser(new protobuf_server);
+    if (NULL == pser) {
+        LOG("create server error");
+        return -1;
+    }
+
+    pthread_t t;
+    pthread_create(&t, NULL, sock_thread_handler, (void*)pser.get());
+
+    naive_client_for_test();
     
     while (is_running) {
         sleep(1);
@@ -99,8 +104,6 @@ int main() {
     pser->set_running_flag(false);
 
     pthread_join(t, NULL);
-
-    pser->clear_data();
 
     LOG("finish main");
     return 0;

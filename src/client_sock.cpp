@@ -36,9 +36,8 @@ client_sock::~client_sock() {
         delete []buf_;
     }
 
-    if (fd_ > 0) {
-        close_sock();
-    }
+    
+    close_sock();
 }
         
 char* client_sock::get_data() {
@@ -102,10 +101,15 @@ int client_sock::read_data() {
 }
 
 void client_sock::close_sock(){
-    epoll_ctl(ae_fd_, EPOLL_CTL_DEL, fd_, NULL);
-    close(fd_);
-    fd_ = 0;
-    ae_fd_ = 0;
+    if (ae_fd_ > 0) {
+        epoll_ctl(ae_fd_, EPOLL_CTL_DEL, fd_, NULL);
+        ae_fd_ = 0;
+    }
+    
+    if (fd_ > 0) {
+        close(fd_);
+        fd_ = 0;
+    }
 }
 
 int client_sock::get_fd(){
