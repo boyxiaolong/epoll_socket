@@ -12,6 +12,6 @@ int protobuf_client::read_data() {
 
 
 void protobuf_client::process_data() {
-
+    client_sock::process_data();
 }
 

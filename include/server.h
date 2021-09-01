@@ -10,7 +10,7 @@ class server {
     public:
         server();
 
-        ~server();
+        virtual ~server();
 
         void clear_data();
 

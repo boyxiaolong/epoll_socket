@@ -6,7 +6,7 @@ class client_sock {
     public:
         client_sock(int ae_fd, int fd);
         
-        ~client_sock();
+        virtual ~client_sock();
         
         //处理读取好的数据
         virtual void process_data();
