@@ -4,6 +4,12 @@
 
 #include <string>
 
+namespace google {
+    namespace protobuf {
+        class Message;
+    }
+}
+
 class protobuf_client : public client_sock {
 
 public:
@@ -15,5 +21,7 @@ public:
     virtual void process_data();
 
     virtual int handle_msg(int msg_id, const char* pdata, int length);
+
+    int send_pb_msg(google::protobuf::Message* pmsg, int msg_id);
 };
 #endif

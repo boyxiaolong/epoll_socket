@@ -8,6 +8,8 @@
 #include "../net_msg/req_login.pb.h"
 #include "../net_msg/msg_num.pb.h"
 
+#include <google/protobuf/message.h>
+
 protobuf_client::protobuf_client(int ae_fd, int fd) 
     : client_sock(ae_fd, fd) {
 
@@ -67,4 +69,8 @@ int protobuf_client::handle_msg(int msg_id, const char* pdata, int length) {
         break;
     }
     return 0;
+}
+
+int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
+
 }
