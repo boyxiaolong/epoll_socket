@@ -61,22 +61,10 @@ static void* client_handler(void* ser) {
     login_msg.set_account_id("allen");
     login_msg.set_device_id(111);
 
-    std::string msg_str = login_msg.SerializeAsString();
-    
-    int msg_size = msg_str.size();
-
-    LOG("login_msg size %d",  msg_size);
-
     int msg_id = login_msg.msg_id();
-    int total_size = 4 + 4 + msg_size;
-    char* psend_data = new char[total_size];
-    memcpy(psend_data, &total_size, sizeof(total_size));
-    memcpy(psend_data + 4, &msg_id, sizeof(msg_id));
-    memcpy(psend_data + 8, msg_str.c_str(), msg_size);
     
-    pc->send_data(psend_data, total_size);
+    pc->send_pb_msg(&login_msg, msg_id);
 
-    delete []psend_data;
     return NULL;
 }
 

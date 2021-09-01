@@ -72,5 +72,21 @@ int protobuf_client::handle_msg(int msg_id, const char* pdata, int length) {
 }
 
 int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
+    std::string msg_str = pmsg->SerializeAsString();
+    
+    int msg_size = msg_str.size();
 
+    LOG("send msg size %d",  msg_size);
+
+    int total_size = 4 + 4 + msg_size;
+    char* psend_data = new char[total_size];
+    memcpy(psend_data, &total_size, sizeof(total_size));
+    memcpy(psend_data + 4, &msg_id, sizeof(msg_id));
+    memcpy(psend_data + 8, msg_str.c_str(), msg_size);
+    
+    send_data(psend_data, total_size);
+
+    delete []psend_data;
+
+    return 0;
 }

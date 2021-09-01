@@ -73,5 +73,8 @@ class client_sock {
         
         //buf当前位置
         int cur_pos_ = 0;
+
+        //todo 
+        char* psend_buf_ = nullptr;
 };
 #endif
