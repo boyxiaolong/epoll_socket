@@ -15,16 +15,5 @@ public:
     virtual void process_data();
 
     virtual int handle_msg(int msg_id, std::string& msg);
-
-    void clear_data();
-
-private:
-    bool is_read_header_ = false;
-
-    int header_size_ = 4;
-
-    int msg_length_ = 0;
-
-    int msg_id_ = -1;
 };
 #endif

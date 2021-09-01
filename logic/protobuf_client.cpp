@@ -15,56 +15,41 @@ protobuf_client::protobuf_client(int ae_fd, int fd)
 int protobuf_client::read_data() {
     LOG("begin read");
     int readn = 0;
-    bool is_read_error = false;
-    while (true) {
-        int nread = 0;
-        if (!is_read_header_) {
-            nread = read(fd_, &msg_length_, 4);
-            if (nread != 4) {
-                LOG("read header error read_num %d", nread);
-                is_read_error = true;
-                break;
-            }
-            is_read_header_ = true;
-        }
-        else if (msg_id_ < 0) {
-            nread = read(fd_, &msg_id_, 4);
-            if (nread != 4) {
-                LOG("read header error");
-                is_read_error = true;
-                break;
-            }
-        }
-        else {
-            int left_msg_len = msg_length_ - 8;
-            //LOG("left_msg_len %d", left_msg_len);
-            nread = read(fd_, get_data(), left_msg_len);
-            if (nread != left_msg_len) {
-                LOG("read header error");
-                is_read_error = true;
-                break;
-            }
-
-            add_pos(nread);
-            break;
-        }
+    
+    int nread = 0;
+    int msg_length = 0;
+    nread = read(fd_, &msg_length, 4);
+    if (nread != 4) {
+        LOG("read header error read_num %d", nread);
+        return -1;
     }
-                
-    if (is_read_error) {
-        LOG("is_read_error");
+    int msg_id = 0;
+    nread = read(fd_, &msg_id, 4);
+    if (nread != 4) {
+        LOG("read header error");
         return -1;
     }
 
-    process_data();
+    int left_msg_len = msg_length - 8;
+    //LOG("left_msg_len %d", left_msg_len);
+    char* pdata = new char[left_msg_len];
+    nread = read(fd_, pdata, left_msg_len);
+    if (nread != left_msg_len) {
+        LOG("read header error");
+        delete []pdata;
+        return -1;
+    }
 
-    clear_data();
+    LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
+    std::string msg(pdata, left_msg_len);
+    handle_msg(msg_id, msg);
+                
+    delete []pdata;
     return 0;
 }
 
 
 void protobuf_client::process_data() {
-    std::string msg(buf_, msg_length_-8);
-    handle_msg(msg_id_, msg);
 }
 
 int protobuf_client::handle_msg(int msg_id, std::string& msg) {
@@ -82,11 +67,4 @@ int protobuf_client::handle_msg(int msg_id, std::string& msg) {
         break;
     }
     return 0;
-}
-
-void protobuf_client::clear_data() {
-    is_read_header_ = false;
-    header_size_ = 0;
-    msg_length_ = 0;
-    msg_id_ = -1;
 }

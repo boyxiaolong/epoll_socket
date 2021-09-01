@@ -71,7 +71,7 @@ int main() {
 
     int msg_size = msg_str.size();
 
-    LOG("login_msg str:%s, size %d", msg_str.c_str(), msg_size);
+    LOG("login_msg size %d",  msg_size);
 
     int msg_id = login_msg.msg_id();
     int total_size = 4 + 4 + msg_size;
