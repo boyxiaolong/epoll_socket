@@ -6,3 +6,5 @@
 暂时只支持一个epoll一个Server，监听一个端口，处理多个客户端连接;
 
 可以定制自己的server，client，具体实例在/logic内，实现了简单的protobuf协议的server client.
+
+编译好后，可执行sh mem_check.sh 检测是否有内存泄漏.
