@@ -21,47 +21,33 @@ int protobuf_client::read_data() {
         if (!is_read_header_) {
             nread = read(fd_, &msg_length_, 4);
             if (nread != 4) {
+                LOG("read header error read_num %d", nread);
+                is_read_error = true;
+                break;
+            }
+            is_read_header_ = true;
+        }
+        else if (msg_id_ < 0) {
+            nread = read(fd_, &msg_id_, 4);
+            if (nread != 4) {
+                LOG("read header error");
+                is_read_error = true;
+                break;
+            }
+        }
+        else {
+            int left_msg_len = msg_length_ - 8;
+            //LOG("left_msg_len %d", left_msg_len);
+            nread = read(fd_, get_data(), left_msg_len);
+            if (nread != left_msg_len) {
                 LOG("read header error");
                 is_read_error = true;
                 break;
             }
 
-            //LOG("msg_length %d", msg_length_);
-            is_read_header_ = true;
-        }
-        else {
-            int left_msg_len = msg_length_ - cur_pos;
-            //LOG("left_msg_len %d", left_msg_len);
-            nread = read(fd_, get_data(), left_msg_len);
-        }
-        
-        if (nread < 0) {
-            if (errno == EAGAIN)
-            {
-                //LOG("fd %d read end!", fd_);
-                break;
-            }
-            
-            LOG("read error %d\n", nread);
-            is_read_error = true;
+            add_pos(nread);
             break;
         }
-        if (nread == 0) {
-            if (cur_pos < msg_length_) {
-                LOG("read error");
-                is_read_error = true;
-            }
-            else {
-                LOG("readnum 0 so read end");
-            }
-            
-            break;
-        }
-        
-        //LOG("sock %d read size %d left_size %d", fd_, nread, get_left_length());
-        add_pos(nread);
-        readn += nread;
-        LOG("readnum:%d", nread);
     }
                 
     if (is_read_error) {
@@ -75,9 +61,8 @@ int protobuf_client::read_data() {
 
 
 void protobuf_client::process_data() {
-    int msg_id = *(int*)(buf_+4);
-    std::string msg(buf_+8, msg_length_-8);
-    handle_msg(msg_id, msg);
+    std::string msg(buf_, msg_length_-8);
+    handle_msg(msg_id_, msg);
 }
 
 int protobuf_client::handle_msg(int msg_id, std::string& msg) {

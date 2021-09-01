@@ -22,5 +22,7 @@ private:
     int header_size_ = 4;
 
     int msg_length_ = 0;
+
+    int msg_id_ = -1;
 };
 #endif
