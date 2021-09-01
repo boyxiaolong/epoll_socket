@@ -18,7 +18,7 @@ class client_sock {
         int get_left_length();
 
         //从网络读数据
-        int read_data();
+        virtual int read_data();
 
         //关闭套接字资源
         void close_sock();
