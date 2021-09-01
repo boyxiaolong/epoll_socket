@@ -20,13 +20,13 @@
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
-, max_length(16)
+, max_length_(1024*4)
 , cur_pos(0) {
     if (fd_ > 0) {
         is_connected_ = true;
     }
     
-    buf_ = new char[max_length];
+    buf_ = new char[max_length_];
 }
 
 client_sock::~client_sock() {
@@ -46,7 +46,7 @@ char* client_sock::get_data() {
 }
 
 int client_sock::get_left_length() {
-    return max_length-cur_pos;
+    return max_length_-cur_pos;
 }
 
 void client_sock::process_data() {
@@ -57,15 +57,6 @@ void client_sock::process_data() {
 
 void client_sock::add_pos(int length) {
     cur_pos += length;
-    if (get_left_length() < 1) {
-        int new_length = max_length*2;
-        char* new_data = new char[new_length];
-        memcpy(new_data, buf_, max_length);
-        max_length = new_length;
-        delete buf_;
-        buf_ = new_data;
-        LOG("resize data %d", new_length);
-    }
 }
 
 int client_sock::read_data() {
@@ -217,4 +208,15 @@ int client_sock::send_data(char* pdata, int length) {
     
     LOG("send length %d success", length);
     return 0;
+}
+
+
+void client_sock::expand_buf() {
+    int new_length = max_length_*2;
+    char* new_data = new char[new_length];
+    memcpy(new_data, buf_, max_length_);
+    max_length_ = new_length;
+    delete buf_;
+    buf_ = new_data;
+    LOG("resize data %d", new_length);
 }

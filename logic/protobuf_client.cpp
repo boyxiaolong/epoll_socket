@@ -32,19 +32,20 @@ int protobuf_client::read_data() {
 
     int left_msg_len = msg_length - 8;
     //LOG("left_msg_len %d", left_msg_len);
-    char* pdata = new char[left_msg_len];
-    nread = read(fd_, pdata, left_msg_len);
+    while (left_msg_len > max_length_) {
+       expand_buf();
+    }
+    
+    nread = read(fd_, buf_, max_length_);
     if (nread != left_msg_len) {
         LOG("read header error");
-        delete []pdata;
         return -1;
     }
 
     LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
-    std::string msg(pdata, left_msg_len);
+    std::string msg(buf_, left_msg_len);
     handle_msg(msg_id, msg);
-                
-    delete []pdata;
+
     return 0;
 }
 

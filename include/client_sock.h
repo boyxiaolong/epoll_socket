@@ -48,13 +48,15 @@ class client_sock {
     protected:
         void add_pos(int length);
 
+        void expand_buf();
+
     protected:
         bool is_connected_ = false;
         int ae_fd_;
         int fd_;
         int state_;
         char* buf_;
-        int max_length;
+        int max_length_;
         int cur_pos;
 };
 #endif
