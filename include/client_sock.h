@@ -11,6 +11,9 @@ class client_sock {
         //处理读取好的数据
         virtual void process_data();
 
+        //socket初始化工作
+        virtual int socket_init();
+
         //获取buff指针
         char* get_data();
 

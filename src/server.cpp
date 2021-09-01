@@ -133,13 +133,21 @@ int Server::_ae_accept() {
             res = -1;
             break;
         }
-        client_sock* ps = new client_sock(ae_fd_, new_socket);
-        ps->set_nodelay();
-        ps->set_noblock();
-        ps->set_event(EPOLLIN);
-        LOG("accept new socket %d and addto epoll", new_socket);
+
+        client_sock* pnew_client = on_create_client(ae_fd_, new_socket);
+        if (nullptr == pnew_client) {
+            LOG("create client error");
+            close(new_socket);
+            continue;
+        }
         
-        socket_map_.insert(std::make_pair(new_socket, ps));
+        int res = pnew_client->socket_init();
+        if (res != 0) {
+            LOG("socket_init error");
+        }
+        
+        LOG("add new socket %d", new_socket);
+        socket_map_.insert(std::make_pair(new_socket, pnew_client));
     } while (true);
 
     LOG("end ae_accept");
@@ -214,4 +222,10 @@ int Server::ae_poll() {
     }
     LOG("server finish");
     return 0;
+}
+
+
+client_sock* Server::on_create_client(int ae_fd, int new_conn_fd) {
+    client_sock* ps = new client_sock(ae_fd_, new_conn_fd);
+    return ps;
 }

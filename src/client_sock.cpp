@@ -140,3 +140,25 @@ int client_sock::set_event(int event) {
     }
     return 0;
 }
+
+int client_sock::socket_init() {
+    int res = set_noblock();
+    if (res != 0) {
+        LOG("set_noblock error");
+        return -1;
+    }
+
+    res = set_nodelay();
+    if (res != 0) {
+        LOG("set_noblock error");
+        return -1;
+    }
+    
+    res = set_event(EPOLLIN);
+    if (res != 0) {
+        LOG("set_event error");
+        return -1;
+    }
+
+    return 0;
+}
