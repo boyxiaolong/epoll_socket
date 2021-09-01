@@ -5,7 +5,8 @@
 
 #include "../include/log.h"
 
-#include "../net_msg/req_login.pb.h"
+#include "../net_msg/login.pb.h"
+#include "../net_msg/login.pb.h"
 #include "../net_msg/msg_num.pb.h"
 
 #include <google/protobuf/message.h>
@@ -58,9 +59,13 @@ int protobuf_client::handle_msg(int msg_id, const char* pdata, int length) {
     switch (msg_id)
     {
     case game::eMsg_ReqLogin : {
-            game::ReqLogin login_msg;
-            login_msg.ParseFromArray(pdata, length);
-            LOG("login account_id %s device_id %d", login_msg.account_id().c_str(), login_msg.device_id());
+            game::ReqLogin req_login_msg;
+            req_login_msg.ParseFromArray(pdata, length);
+            LOG("login account_id %s device_id %d", req_login_msg.account_id().c_str(), req_login_msg.device_id());
+
+            game::ResLogin res_login_msg;
+            res_login_msg.set_actor_id(11);
+
         }
         break;
     

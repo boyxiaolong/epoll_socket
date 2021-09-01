@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "net_msg/req_login.pb.h"
+#include "net_msg/login.pb.h"
 #include "net_msg/msg_num.pb.h"
 
 std::atomic<int> is_running(true);
