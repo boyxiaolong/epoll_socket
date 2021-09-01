@@ -1,6 +1,8 @@
 #ifndef _client_sock_h__
 #define _client_sock_h__
 
+#include <stdint.h>
+
 class client_sock {
     
     public:
@@ -38,10 +40,13 @@ class client_sock {
         //设置读写事件
         int set_event(int event);
 
+        int sync_connect(const char* ip, uint16_t port);
+
     protected:
         void add_pos(int length);
 
     protected:
+        bool is_connected_ = false;
         int ae_fd_;
         int fd_;
         int state_;

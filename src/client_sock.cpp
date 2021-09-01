@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <netinet/tcp.h>
 #include <sys/epoll.h>
+#include "netdb.h"
 
 #include <string>
 
@@ -21,6 +22,10 @@ client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
 , max_length(16)
 , cur_pos(0) {
+    if (fd_ > 0) {
+        is_connected_ = true;
+    }
+    
     buf_ = new char[max_length];
 }
 
@@ -162,3 +167,40 @@ int client_sock::socket_init() {
 
     return 0;
 }
+
+int client_sock::sync_connect(const char* ip, uint16_t port) {
+    if (is_connected_) {
+        LOG("already connected");
+        return -1;
+    }
+    struct addrinfo serv_addr;
+    memset(&serv_addr, 0, sizeof(serv_addr));
+    serv_addr.ai_family = AF_INET;
+    serv_addr.ai_socktype = SOCK_STREAM;
+    serv_addr.ai_protocol = IPPROTO_TCP;
+    int conn_fd = socket(serv_addr.ai_family, serv_addr.ai_socktype, 0);
+    if (fd_ < 1) {
+        LOG("socket create");
+        return -1;    
+    }
+
+    struct addrinfo* real_server_info = NULL;
+    char port_str[6];
+    snprintf(port_str, 6, "%d", port);
+    int res = getaddrinfo(ip, port_str, &serv_addr, &real_server_info);
+    if (res != 0) {
+        LOG("getaddrinfo error %d", res);
+        return -1;
+    }
+
+    res = connect(conn_fd, (struct sockaddr *) (real_server_info->ai_addr), real_server_info->ai_addrlen);
+    if (res != 0) {
+        LOG("connect error");
+        return -1;
+    }
+    
+    fd_ = conn_fd;
+    
+    return 0;
+}
+
