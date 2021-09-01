@@ -26,19 +26,19 @@ int protobuf_client::read_data() {
                 break;
             }
 
-            LOG("msg_length %d", msg_length_);
+            //LOG("msg_length %d", msg_length_);
             is_read_header_ = true;
         }
         else {
             int left_msg_len = msg_length_ - cur_pos;
-            LOG("left_msg_len %d", left_msg_len);
+            //LOG("left_msg_len %d", left_msg_len);
             nread = read(fd_, get_data(), left_msg_len);
         }
         
         if (nread < 0) {
             if (errno == EAGAIN)
             {
-                LOG("fd %d read end!", fd_);
+                //LOG("fd %d read end!", fd_);
                 break;
             }
             
@@ -57,7 +57,8 @@ int protobuf_client::read_data() {
             
             break;
         }
-        LOG("sock %d read size %d left_size %d", fd_, nread, get_left_length());
+        
+        //LOG("sock %d read size %d left_size %d", fd_, nread, get_left_length());
         add_pos(nread);
         readn += nread;
         LOG("readnum:%d", nread);
@@ -75,7 +76,7 @@ int protobuf_client::read_data() {
 
 void protobuf_client::process_data() {
     int msg_id = *(int*)(buf_+4);
-    std::string msg(buf_+8, cur_pos-8);
+    std::string msg(buf_+8, msg_length_-8);
     handle_msg(msg_id, msg);
 }
 
@@ -85,7 +86,8 @@ int protobuf_client::handle_msg(int msg_id, std::string& msg) {
     case example::eMsgToSFromC_Login: {
             example::Login login_msg;
             login_msg.ParseFromString(msg);
-            LOG("login msg size %d account_id %s device_id %d", msg.size(), login_msg.account_id().c_str(), login_msg.device_id());
+            LOG("login msg %s size %d account_id %s device_id %d"
+            , msg.c_str(), msg.size(), login_msg.account_id().c_str(), login_msg.device_id());
         }
         break;
     
