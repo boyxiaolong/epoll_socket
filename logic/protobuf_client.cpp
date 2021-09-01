@@ -85,7 +85,7 @@ int protobuf_client::handle_msg(int msg_id, std::string& msg) {
     case example::eMsgToSFromC_Login: {
             example::Login login_msg;
             login_msg.ParseFromString(msg);
-            LOG("login msg account_id %s device_id %d", login_msg.account_id().c_str(), login_msg.device_id());
+            LOG("login msg size %d account_id %s device_id %d", msg.size(), login_msg.account_id().c_str(), login_msg.device_id());
         }
         break;
     

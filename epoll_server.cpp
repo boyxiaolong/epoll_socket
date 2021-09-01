@@ -54,7 +54,7 @@ int main() {
     pthread_t t;
     pthread_create(&t, NULL, sock_thread_handler, (void*)pser.get());
 
-    sleep(5);
+    sleep(3);
 
     std::unique_ptr<protobuf_client> pc(new protobuf_client(pser->get_ae_fd(), 0));
     int res = pc->sync_connect("0.0.0.0", 9999);
@@ -68,7 +68,11 @@ int main() {
     login_msg.set_device_id(111);
 
     std::string msg_str = login_msg.SerializeAsString();
+
     int msg_size = msg_str.size();
+
+    LOG("login_msg str:%s, size %d", msg_str.c_str(), msg_size);
+
     int msg_id = login_msg.msg_id();
     int total_size = 4 + 4 + msg_size;
     char* psend_data = new char[total_size];
