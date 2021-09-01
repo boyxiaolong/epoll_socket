@@ -43,8 +43,7 @@ int protobuf_client::read_data() {
     }
 
     LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
-    std::string msg(buf_, left_msg_len);
-    handle_msg(msg_id, msg);
+    handle_msg(msg_id, buf_, left_msg_len);
 
     return 0;
 }
@@ -53,12 +52,12 @@ int protobuf_client::read_data() {
 void protobuf_client::process_data() {
 }
 
-int protobuf_client::handle_msg(int msg_id, std::string& msg) {
+int protobuf_client::handle_msg(int msg_id, const char* pdata, int length) {
     switch (msg_id)
     {
     case game::eMsg_ReqLogin : {
             game::ReqLogin login_msg;
-            login_msg.ParseFromString(msg);
+            login_msg.ParseFromArray(pdata, length);
             LOG("login account_id %s device_id %d", login_msg.account_id().c_str(), login_msg.device_id());
         }
         break;

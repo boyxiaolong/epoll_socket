@@ -14,6 +14,6 @@ public:
 
     virtual void process_data();
 
-    virtual int handle_msg(int msg_id, std::string& msg);
+    virtual int handle_msg(int msg_id, const char* pdata, int length);
 };
 #endif
