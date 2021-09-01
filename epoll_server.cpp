@@ -53,6 +53,14 @@ int main() {
     pthread_t t;
     pthread_create(&t, NULL, sock_thread_handler, (void*)pser.get());
 
+    sleep(5);
+
+    std::unique_ptr<protobuf_client> pc(new protobuf_client(pser->get_ae_fd(), 0));
+    int res = pc->sync_connect("0.0.0.0", 9999);
+    if (res != 0) {
+        LOG("connect error");
+    }
+    
     while (is_running) {
         sleep(1);
     }

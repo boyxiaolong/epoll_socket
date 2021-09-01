@@ -169,6 +169,8 @@ int client_sock::socket_init() {
 }
 
 int client_sock::sync_connect(const char* ip, uint16_t port) {
+    LOG("begin connect ip %s port %d", ip, port);
+
     if (is_connected_) {
         LOG("already connected");
         return -1;
@@ -179,7 +181,7 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
     serv_addr.ai_socktype = SOCK_STREAM;
     serv_addr.ai_protocol = IPPROTO_TCP;
     int conn_fd = socket(serv_addr.ai_family, serv_addr.ai_socktype, 0);
-    if (fd_ < 1) {
+    if (conn_fd < 1) {
         LOG("socket create");
         return -1;    
     }
@@ -201,6 +203,7 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
     
     fd_ = conn_fd;
     
+    LOG("end connect ip %s port %d success", ip, port);
     return 0;
 }
 
