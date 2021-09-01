@@ -38,10 +38,10 @@ class client_sock {
         //设置读写事件
         int set_event(int event);
 
-    private:
+    protected:
         void add_pos(int length);
 
-    private:
+    protected:
         int ae_fd_;
         int fd_;
         int state_;
