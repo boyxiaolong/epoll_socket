@@ -71,7 +71,7 @@ int server::init_ae() {
 }
 
 int server::create_server_sock(const char* ip, uint16_t port) {
-    struct addrinfo serv_addr;
+    addrinfo serv_addr;
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.ai_family = AF_INET;
     serv_addr.ai_socktype = SOCK_STREAM;
@@ -82,7 +82,7 @@ int server::create_server_sock(const char* ip, uint16_t port) {
         return -1;    
     }
 
-    struct addrinfo* real_server_info = NULL;
+    addrinfo* real_server_info = NULL;
     char port_str[6];
     snprintf(port_str, 6, "%d", port);
     int res = getaddrinfo(ip, port_str, &serv_addr, &real_server_info);
@@ -93,7 +93,7 @@ int server::create_server_sock(const char* ip, uint16_t port) {
     }
 
     LOG("begin bind on port %d", port);
-    int ret = bind(listen_fd_, (struct sockaddr *) (real_server_info->ai_addr), real_server_info->ai_addrlen);
+    int ret = bind(listen_fd_, static_cast<sockaddr *>(real_server_info->ai_addr), real_server_info->ai_addrlen);
     freeaddrinfo(real_server_info);
     if (ret < 0) {
         LOG("bind");
@@ -122,9 +122,9 @@ int server::_ae_accept() {
     LOG("begin ae_accept");
     int res = 0;
     do {
-        struct sockaddr_in client_addr;
+        sockaddr_in client_addr;
         int addrlen = 0;
-        int new_socket = accept(listen_fd_, (struct sockaddr *)&client_addr,(socklen_t*)&addrlen);
+        int new_socket = accept(listen_fd_,  (sockaddr *)(&client_addr), (socklen_t*)(&addrlen));
         if (new_socket < 0) {
             if (errno == EAGAIN) {
                 LOG("fd %d acceptc nonblock!", ae_fd_);

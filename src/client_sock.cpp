@@ -170,7 +170,8 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
         LOG("already connected");
         return -1;
     }
-    struct addrinfo serv_addr;
+    
+    addrinfo serv_addr;
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.ai_family = AF_INET;
     serv_addr.ai_socktype = SOCK_STREAM;
@@ -181,7 +182,7 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
         return -1;    
     }
 
-    struct addrinfo* real_server_info = NULL;
+    addrinfo* real_server_info = NULL;
     char port_str[6];
     snprintf(port_str, 6, "%d", port);
     int res = getaddrinfo(ip, port_str, &serv_addr, &real_server_info);
@@ -190,7 +191,7 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
         return -1;
     }
 
-    res = connect(conn_fd, (struct sockaddr *) (real_server_info->ai_addr), real_server_info->ai_addrlen);
+    res = connect(conn_fd, static_cast<sockaddr *>(real_server_info->ai_addr), real_server_info->ai_addrlen);
     freeaddrinfo(real_server_info);
     if (res != 0) {
         LOG("connect error");

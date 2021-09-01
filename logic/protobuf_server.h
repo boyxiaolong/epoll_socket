@@ -11,7 +11,6 @@ public:
 
     protobuf_server();
 
-
     virtual client_sock* on_create_client(int ae_fd, int new_conn_fd);
 };
 #endif

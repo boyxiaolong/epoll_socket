@@ -17,12 +17,12 @@
 
 std::atomic<int> is_running(true);
 
-static void ctrl_handler(int sig){
+static void ctrl_handler(int sig) {
     LOG("ctrl+c");
     is_running = false;
 }
 
-static void* sock_thread_handler(void* ser){
+static void* sock_thread_handler(void* ser) {
     if (NULL == ser) {
         LOG("thread error");
         return NULL;
@@ -88,8 +88,7 @@ void naive_client_for_test(int thread_num) {
         pvec.push_back(pt);
     }
 
-    for (size_t i = 0; i < thread_num; i++)
-    {
+    for (size_t i = 0; i < thread_num; i++) {
         pthread_t* pt = pvec[i];
         pthread_join(*pt, NULL);
         delete pt;
