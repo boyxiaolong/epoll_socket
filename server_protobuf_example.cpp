@@ -13,7 +13,8 @@
 
 #include "net_msg/login.pb.h"
 
-bool is_running = true;
+std::atomic<int> is_running(true);
+
 static void ctrl_handler(int sig){
     LOG("ctrl+c");
     is_running = false;
