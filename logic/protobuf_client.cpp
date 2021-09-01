@@ -34,19 +34,18 @@ int protobuf_client::read_data() {
     }
 
     int left_msg_len = msg_length - 8;
-    //LOG("left_msg_len %d", left_msg_len);
     while (left_msg_len > max_length_) {
        expand_buf();
     }
     
-    nread = read(fd_, buf_, left_msg_len);
+    nread = read(fd_, buf_.data(), left_msg_len);
     if (nread != left_msg_len) {
         LOG("read header error");
         return -1;
     }
 
     LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
-    handle_msg(msg_id, buf_, left_msg_len);
+    handle_msg(msg_id, buf_.data(), left_msg_len);
 
     return 0;
 }
@@ -84,7 +83,7 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
 
     LOG("send msg size %d",  msg_size);
 
-    int total_size = 4 + 4 + msg_size;
+    int total_size = 8 + msg_size;
     char* psend_data = new char[total_size];
     memcpy(psend_data, &total_size, sizeof(total_size));
     memcpy(psend_data + 4, &msg_id, sizeof(msg_id));

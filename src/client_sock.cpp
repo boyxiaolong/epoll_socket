@@ -19,28 +19,21 @@
 #include "../include/log.h"
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
-, fd_(fd) {
+, fd_(fd)
+, buf_(max_length_, 0) {
     if (fd_ > 0) {
         is_connected_ = true;
     }
-    
-    buf_ = new char[max_length_];
 }
 
 client_sock::~client_sock() {
     LOG("fd %d dtor", fd_);
-
-    if (nullptr != buf_) {
-        delete []buf_;
-        buf_ = nullptr;
-    }
-
     
     close_sock();
 }
         
 char* client_sock::get_data() {
-    return buf_+ cur_pos_;
+    return buf_.data() + cur_pos_;
 }
 
 int client_sock::get_left_length() {
@@ -131,7 +124,7 @@ int client_sock::set_nodelay() {
 }
 
 int client_sock::set_event(int event) {
-    struct epoll_event ev;
+    epoll_event ev;
     ev.events = event;
     ev.data.fd = fd_;
     if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, fd_, &ev) < 0) {
@@ -217,11 +210,7 @@ int client_sock::send_data(char* pdata, int length) {
 
 
 void client_sock::expand_buf() {
-    int new_length = max_length_*2;
-    char* new_data = new char[new_length];
-    memcpy(new_data, buf_, max_length_);
-    max_length_ = new_length;
-    delete []buf_;
-    buf_ = new_data;
+    int new_length = max_length_ * 2;
+    buf_.resize(new_length);
     LOG("resize data %d", new_length);
 }

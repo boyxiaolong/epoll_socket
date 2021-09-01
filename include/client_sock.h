@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <vector>
+
 class client_sock {
     
     public:
@@ -66,7 +68,7 @@ class client_sock {
         int state_ = 0;
 
         //数据cache
-        char* buf_ = nullptr;
+        std::vector<char> buf_;
 
         //buf最大长度
         int max_length_ = 4056;
