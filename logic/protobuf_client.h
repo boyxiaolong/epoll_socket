@@ -11,9 +11,7 @@ namespace google {
 }
 
 class protobuf_client : public client_sock {
-
 public:
-
     protobuf_client(int ae_fd, int fd);
 
     virtual int read_data();

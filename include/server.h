@@ -7,7 +7,6 @@
 class client_sock;
 
 class server {
-    
     public:
         server();
 

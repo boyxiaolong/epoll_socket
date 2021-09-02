@@ -6,7 +6,6 @@
 #include <vector>
 
 class client_sock {
-    
     public:
         client_sock(int ae_fd, int fd);
         

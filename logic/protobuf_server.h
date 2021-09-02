@@ -5,8 +5,7 @@
 
 class client_sock;
 
-class protobuf_server : public server {
-
+class protobuf_server : public server { 
 public:
 
     protobuf_server();
