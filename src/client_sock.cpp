@@ -147,6 +147,12 @@ int client_sock::socket_init() {
         LOG("set_noblock error");
         return -1;
     }
+
+    res = set_timeout();
+    if (res != 0) {
+        LOG("set_timeout error");
+        return -1;
+    }
     
     res = set_event(EPOLLIN);
     if (res != 0) {
@@ -214,4 +220,23 @@ void client_sock::expand_buf() {
     int new_length = max_length_ * 2;
     buf_.resize(new_length);
     LOG("resize data %d", new_length);
+}
+
+int client_sock::set_timeout() {
+    timeval timeout;
+    timeout.tv_sec = 5;
+    timeout.tv_usec = 0;
+    int res = setsockopt(fd_, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+    if (res != 0) {
+        LOG("error %d", errno);
+        return -1;
+    }
+
+    res = setsockopt(fd_, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+    if (res != 0) {
+        LOG("error");
+        return -1;
+    }
+
+    return 0;
 }

@@ -47,6 +47,8 @@ class client_sock {
         //发送数据
         int send_data(char* pdata, int length);
 
+        int set_timeout();
+
     protected:
         void add_pos(int length);
 
