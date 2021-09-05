@@ -49,6 +49,8 @@ class client_sock {
 
         int set_timeout();
 
+        int set_keeplive();
+
     protected:
         void add_pos(int length);
 
