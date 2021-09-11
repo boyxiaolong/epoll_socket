@@ -189,18 +189,29 @@ int server::ae_poll() {
         for (size_t i = 0; i < nfds; i++) {
             epoll_event& cur_ev = events[i];
             int cur_fd = cur_ev.data.fd;
+            int event = cur_ev.events;
+
             LOG("epoll cur_fd %d", cur_fd);
             if (cur_fd == listen_fd_) {
                 _ae_accept();
-            }
+            } 
             else {
                 std::shared_ptr<client_sock> ps = get_sock_ps(cur_fd);
                 if (NULL == ps) {
                     continue;
                 }
-                int res = ps->read_data();
-                if (res < 0) {
-                    ps->on_disconnect();
+
+                if (event & EPOLLIN) {
+                    int res = ps->on_read();
+                    if (res < 0) {
+                        ps->on_disconnect();
+                    }
+                }
+                else if (event & EPOLLOUT){
+                    int res = ps->on_write();
+                    if (res < 0) {
+                        ps->on_disconnect();
+                    }
                 }
             }
         }

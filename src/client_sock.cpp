@@ -269,7 +269,7 @@ int client_sock::set_keeplive() {
 }
 
 void client_sock::update() {
-
+    process_data();
 }
 
 void client_sock::on_disconnect() {
@@ -282,6 +282,28 @@ int client_sock::send_data(std::shared_ptr<net_buffer> buff_data) {
         return send_data(buff_data->get_raw_data(), buff_data->get_length());
     }
 
-    send_net_buffer_vec_.push_back(buff_data);
+    if (!is_sending_) {
+        set_event(EPOLLOUT | EPOLLIN);
+        is_sending_ = true;
+    }
+
+    send_net_buffer_vec_.push(buff_data);
     return 0;
+}
+
+int client_sock::_send_data() {
+    while (!send_net_buffer_vec_.empty()) {
+        auto buff_data = send_net_buffer_vec_.front();
+        send_net_buffer_vec_.pop();
+
+        send_data(buff_data->get_raw_data(), buff_data->get_length());
+    }
+}
+
+int client_sock::on_read() {
+    return read_data();
+}
+
+int client_sock::on_write() {
+    return _send_data();
 }

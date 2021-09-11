@@ -26,8 +26,6 @@ public:
 
     int send_pb_msg(google::protobuf::Message* pmsg, int msg_id);
 
-    virtual void update();
-
 private:
     typedef std::vector<std::shared_ptr<google::protobuf::Message> > msg_vec;
     msg_vec msg_vec_;

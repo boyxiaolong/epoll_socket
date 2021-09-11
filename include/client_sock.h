@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include <vector>
+#include <queue>
 #include <memory>
 
 #include "net_buffer.h"
@@ -15,7 +16,7 @@ enum socket_state {
     socket_close
 };
 
-typedef std::vector<std::shared_ptr<net_buffer> > net_buffer_vec;
+typedef std::queue<std::shared_ptr<net_buffer> > net_buffer_vec;
 
 class client_sock {
     public:
@@ -73,11 +74,18 @@ class client_sock {
 
         bool is_block() {return is_block_;}
 
+        int on_read();
+
+        int on_write();
+
     protected:
         void add_pos(int length);
 
         //buf扩展
         void expand_buf();
+
+    private:
+        int _send_data();
 
     protected:
         //epoll fd
@@ -103,5 +111,7 @@ class client_sock {
         net_buffer_vec read_net_buffer_vec_;
 
         net_buffer_vec send_net_buffer_vec_;
+        
+        bool is_sending_ = false;
 };
 #endif
