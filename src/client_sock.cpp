@@ -275,3 +275,11 @@ void client_sock::on_disconnect() {
     LOG("");
     state_ = socket_close;
 }
+
+int client_sock::send_data(std::shared_ptr<net_buffer> buff_data) {
+    if (is_block_) {
+        send_data(buff_data->get_raw_data(), buff_data->get_length());
+    }
+
+    return 0;
+}

@@ -59,6 +59,8 @@ class client_sock {
         //发送数据
         int send_data(char* pdata, int length);
 
+        int send_data(std::shared_ptr<net_buffer> buff_data);
+
         int set_timeout();
 
         int set_keeplive();

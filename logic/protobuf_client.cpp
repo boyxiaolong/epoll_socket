@@ -109,7 +109,7 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
     memcpy(psend_buff->get_raw_data() + sizeof(int), (char*)&msg_id, sizeof(int));
     memcpy(psend_buff->get_raw_data() + sizeof(int)*2, (char*)msg_str.c_str(), msg_size);
 
-    send_data(psend_buff->get_raw_data(), total_size);
+    send_data(psend_buff);
 
     return 0;
 }
