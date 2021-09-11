@@ -24,7 +24,7 @@ int protobuf_client::read_data() {
         int msg_length = 0;
         nread = read(fd_, &msg_length, 4);
         if (nread == 0) {
-            LOG("read header error read_num %d error: %s", nread, strerror(errno));
+            LOG("read header error read_num %d errno %d error: %s", nread, errno, strerror(errno));
             return -1;
         }
 

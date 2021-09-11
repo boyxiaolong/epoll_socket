@@ -100,6 +100,7 @@ void client_sock::close_sock(){
     }
     
     if (fd_ > 0) {
+        LOG("fd %d", fd_);
         close(fd_);
         fd_ = 0;
     }
