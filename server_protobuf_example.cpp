@@ -53,7 +53,7 @@ static void* client_handler(void* ser) {
         return NULL;
     }
 
-    pc->set_noblock();
+    //pc->set_noblock();
     pc->set_nodelay();
 
     game::ReqLogin login_msg;
@@ -64,7 +64,9 @@ static void* client_handler(void* ser) {
     int msg_id = login_msg.msg_id();
     
     pc->send_pb_msg(&login_msg, msg_id);
-
+    sleep(10);
+    pc->read_data();
+    LOG("thread finish!");
     return NULL;
 }
 

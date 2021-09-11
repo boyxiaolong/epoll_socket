@@ -153,15 +153,6 @@ int client_sock::socket_init() {
         LOG("set_timeout error");
         return -1;
     }
-
-    //todo
-    /*
-    res = set_keeplive();
-    if (res != 0) {
-        LOG("set_timeout error");
-        return -1;
-    }
-    */
     
     res = set_event(EPOLLIN);
     if (res != 0) {
@@ -252,7 +243,7 @@ int client_sock::set_timeout() {
 
 int client_sock::set_keeplive() {
     timeval timeout;
-    timeout.tv_sec = 1;
+    timeout.tv_sec = 600;
     timeout.tv_usec = 0;
     int res = setsockopt(fd_, SOL_SOCKET, SO_KEEPALIVE, &timeout, sizeof(timeout));
     if (res != 0) {

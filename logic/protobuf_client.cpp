@@ -18,34 +18,44 @@ protobuf_client::protobuf_client(int ae_fd, int fd)
 
 int protobuf_client::read_data() {
     LOG("begin read");
-    
-    int nread = 0;
-    int msg_length = 0;
-    nread = read(fd_, &msg_length, 4);
-    if (nread != 4) {
-        LOG("read header error read_num %d", nread);
-        return -1;
-    }
-    int msg_id = 0;
-    nread = read(fd_, &msg_id, 4);
-    if (nread != 4) {
-        LOG("read header error");
-        return -1;
-    }
+    while (true) {
+        int nread = 0;
 
-    int left_msg_len = msg_length - 8;
-    while (left_msg_len > max_length_) {
-       expand_buf();
-    }
-    
-    nread = read(fd_, buf_.data(), left_msg_len);
-    if (nread != left_msg_len) {
-        LOG("read header error");
-        return -1;
-    }
+        int msg_length = 0;
+        nread = read(fd_, &msg_length, 4);
+        if (nread == 0) {
+            LOG("read 0");
+            break;
+        }
 
-    LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
-    handle_msg(msg_id, buf_.data(), left_msg_len);
+        if (nread != 4) {
+            LOG("read header error read_num %d", nread);
+            return -1;
+        }
+
+        int msg_id = 0;
+        nread = read(fd_, &msg_id, 4);
+        if (nread != 4) {
+            LOG("read header error");
+            return -1;
+        }
+
+        LOG("msg_length %d msg_id %d", msg_length, msg_id);
+
+        int left_msg_len = msg_length - 8;
+        while (left_msg_len > max_length_) {
+            expand_buf();
+        }
+        
+        nread = read(fd_, &send_buf_[0], left_msg_len);
+        if (nread != left_msg_len) {
+            LOG("error read left_msg_len %d  real:%d errno: %d %s", left_msg_len, nread, errno, strerror(errno));
+            return -1;
+        }
+
+        LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
+        handle_msg(msg_id, &send_buf_[0], left_msg_len);
+    }
 
     return 0;
 }
@@ -81,13 +91,14 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
     
     int msg_size = msg_str.size();
 
-    LOG("send msg size %d",  msg_size);
+    int total_size = sizeof(int)*2 + msg_size;
 
-    int total_size = 8 + msg_size;
+    LOG("send msg size %d msg_id %d total_size %d",  msg_size, msg_id, total_size);
+
     char* psend_data = new char[total_size];
-    memcpy(psend_data, &total_size, sizeof(total_size));
-    memcpy(psend_data + 4, &msg_id, sizeof(msg_id));
-    memcpy(psend_data + 8, msg_str.c_str(), msg_size);
+    memcpy(psend_data, (char*)&total_size, sizeof(int));
+    memcpy(psend_data + sizeof(int), (char*)&msg_id, sizeof(int));
+    memcpy(psend_data + sizeof(int)*2, (char*)msg_str.c_str(), msg_size);
     
     send_data(psend_data, total_size);
 
