@@ -20,8 +20,7 @@
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
-, buf_(max_length_)
-, send_buf_(max_length_, 0) {
+, buf_(max_length_) {
     if (fd_ > 0) {
         state_ = socket_connected;
     }
@@ -141,6 +140,8 @@ int client_sock::socket_init() {
         LOG("set_noblock error");
         return -1;
     }
+
+    is_block_ = false; 
 
     res = set_nodelay();
     if (res != 0) {
