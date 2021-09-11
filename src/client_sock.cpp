@@ -23,7 +23,7 @@ client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , buf_(max_length_)
 , send_buf_(max_length_, 0) {
     if (fd_ > 0) {
-        is_connected_ = true;
+        state_ = socket_connected;
     }
 }
 
@@ -166,8 +166,8 @@ int client_sock::socket_init() {
 int client_sock::sync_connect(const char* ip, uint16_t port) {
     LOG("begin connect ip %s port %d", ip, port);
 
-    if (is_connected_) {
-        LOG("already connected");
+    if (state_ == socket_connecting || state_ == socket_connected) {
+        LOG("socket state %d", state_);
         return -1;
     }
     
@@ -191,14 +191,19 @@ int client_sock::sync_connect(const char* ip, uint16_t port) {
         return -1;
     }
 
+    state_ = socket_connecting;
+
     res = connect(conn_fd, static_cast<sockaddr *>(real_server_info->ai_addr), real_server_info->ai_addrlen);
     freeaddrinfo(real_server_info);
     if (res != 0) {
+        state_ = socket_create;
         LOG("connect error");
         return -1;
     }
     
     fd_ = conn_fd;
+
+    state_ = socket_connected;
     
     LOG("end connect ip %s port %d success", ip, port);
     return 0;
@@ -263,4 +268,9 @@ int client_sock::set_keeplive() {
 
 void client_sock::update() {
 
+}
+
+void client_sock::on_disconnect() {
+    LOG("");
+    state_ = socket_close;
 }

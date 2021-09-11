@@ -76,9 +76,9 @@ int protobuf_client::handle_msg(std::shared_ptr<net_buffer> pnet_buffer) {
             std::shared_ptr<game::ReqLogin> req_login_msg(new game::ReqLogin);
             req_login_msg->ParseFromArray(pnet_buffer->get_raw_data(), pnet_buffer->get_length());
 
-            msg_vec_.push_back(req_login_msg);
+            //msg_vec_.push_back(req_login_msg);
             //msg_vec_map[msg_id].push_back(req_login_msg);
-            //LOG("login account_id %s device_id %d", req_login_msg.account_id().c_str(), req_login_msg.device_id());
+            LOG("login account_id %s device_id %d", req_login_msg->account_id().c_str(), req_login_msg->device_id());
 
             game::ResLogin res_login_msg;
             res_login_msg.set_msg_id(game::eMsg_ResLogin);
@@ -124,4 +124,5 @@ void protobuf_client::handle_logic() {
 
 void protobuf_client::update() {
     LOG("sock fd %d", fd_);
+    handle_logic();
 }

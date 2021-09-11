@@ -7,6 +7,13 @@
 
 #include "net_buffer.h"
 
+enum socket_state {
+    socket_create,
+    socket_connecting,
+    socket_connected,
+    socket_close
+};
+
 class client_sock {
     public:
         client_sock(int ae_fd, int fd);
@@ -55,6 +62,8 @@ class client_sock {
 
         virtual void update();
 
+        virtual void on_disconnect();
+
     protected:
         void add_pos(int length);
 
@@ -62,9 +71,6 @@ class client_sock {
         void expand_buf();
 
     protected:
-        //是否已连接
-        bool is_connected_ = false;
-
         //epoll fd
         int ae_fd_ = 0;
 
@@ -72,7 +78,7 @@ class client_sock {
         int fd_ = 0;
 
         //状态 todo
-        int state_ = 0;
+        int state_ = socket_create;
 
         //数据cache
         net_buffer buf_;
