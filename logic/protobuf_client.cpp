@@ -57,7 +57,7 @@ int protobuf_client::read_data() {
         }
 
         LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
-        net_buffer_vec_.push_back(pbuff);
+        read_net_buffer_vec_.push_back(pbuff);
     }
 
     return 0;
@@ -117,10 +117,10 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
 }
 
 void protobuf_client::handle_logic() {
-    for (auto pmsg : net_buffer_vec_) {
+    for (auto pmsg : read_net_buffer_vec_) {
         handle_msg(pmsg);
     }
-    net_buffer_vec_.clear();
+    read_net_buffer_vec_.clear();
 }
 
 void protobuf_client::update() {
