@@ -1,14 +1,18 @@
 #ifndef logic_protobuf_client_h_
 #define logic_protobuf_client_h_
 #include "../include/client_sock.h"
+#include "../include/net_buffer.h"
 
 #include <string>
+#include <memory>
 
 namespace google {
     namespace protobuf {
         class Message;
     }
 }
+
+class net_buffer;
 
 class protobuf_client : public client_sock {
 public:
@@ -18,8 +22,19 @@ public:
 
     virtual void process_data();
 
-    virtual int handle_msg(int msg_id, const char* pdata, int length);
+    virtual int handle_msg(std::shared_ptr<net_buffer> pnet_buffer);
 
     int send_pb_msg(google::protobuf::Message* pmsg, int msg_id);
+
+    void handle_logic();
+
+private:
+    typedef std::vector<std::shared_ptr<net_buffer> > net_buffer_vec;
+    net_buffer_vec net_buffer_vec_;
+
+    typedef std::vector<std::shared_ptr<google::protobuf::Message> > msg_vec;
+    //typedef std::map<int, msg_vec> msg_vec_map;
+    //msg_vec_map msg_vec_map_;
+    msg_vec msg_vec_;
 };
 #endif

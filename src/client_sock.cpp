@@ -20,7 +20,7 @@
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
-, buf_(max_length_, 0)
+, buf_(max_length_)
 , send_buf_(max_length_, 0) {
     if (fd_ > 0) {
         is_connected_ = true;
@@ -34,7 +34,7 @@ client_sock::~client_sock() {
 }
         
 char* client_sock::get_data() {
-    return buf_.data() + cur_pos_;
+    return buf_.get_raw_data() + cur_pos_;
 }
 
 int client_sock::get_left_length() {

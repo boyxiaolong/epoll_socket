@@ -43,18 +43,17 @@ int protobuf_client::read_data() {
         LOG("msg_length %d msg_id %d", msg_length, msg_id);
 
         int left_msg_len = msg_length - 8;
-        while (left_msg_len > max_length_) {
-            expand_buf();
-        }
+        std::shared_ptr<net_buffer> pbuff(new net_buffer(left_msg_len));
+        pbuff->set_msg_id(msg_id);
         
-        nread = read(fd_, &send_buf_[0], left_msg_len);
+        nread = read(fd_, pbuff->get_raw_data(), left_msg_len);
         if (nread != left_msg_len) {
             LOG("error read left_msg_len %d  real:%d errno: %d %s", left_msg_len, nread, errno, strerror(errno));
             return -1;
         }
 
         LOG("msg_length %d msg_id %d real_msg_len %d", msg_length, msg_id, left_msg_len);
-        handle_msg(msg_id, &send_buf_[0], left_msg_len);
+        net_buffer_vec_.push_back(pbuff);
     }
 
     return 0;
@@ -64,13 +63,16 @@ int protobuf_client::read_data() {
 void protobuf_client::process_data() {
 }
 
-int protobuf_client::handle_msg(int msg_id, const char* pdata, int length) {
-    switch (msg_id)
+int protobuf_client::handle_msg(std::shared_ptr<net_buffer> pnet_buffer) {
+    switch (pnet_buffer->get_msg_id())
     {
     case game::eMsg_ReqLogin : {
-            game::ReqLogin req_login_msg;
-            req_login_msg.ParseFromArray(pdata, length);
-            LOG("login account_id %s device_id %d", req_login_msg.account_id().c_str(), req_login_msg.device_id());
+            std::shared_ptr<game::ReqLogin> req_login_msg(new game::ReqLogin);
+            req_login_msg->ParseFromArray(pnet_buffer->get_raw_data(), pnet_buffer->get_length());
+
+            msg_vec_.push_back(req_login_msg);
+            //msg_vec_map[msg_id].push_back(req_login_msg);
+            //LOG("login account_id %s device_id %d", req_login_msg.account_id().c_str(), req_login_msg.device_id());
 
             game::ResLogin res_login_msg;
             res_login_msg.set_msg_id(game::eMsg_ResLogin);
@@ -80,7 +82,7 @@ int protobuf_client::handle_msg(int msg_id, const char* pdata, int length) {
         break;
     
     default:
-        LOG("msgid %d not handle", msg_id);
+        LOG("not handle");
         break;
     }
     return 0;
@@ -105,4 +107,10 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
     delete []psend_data;
 
     return 0;
+}
+
+void protobuf_client::handle_logic() {
+    for (auto pmsg : net_buffer_vec_) {
+        handle_msg(pmsg);
+    }
 }

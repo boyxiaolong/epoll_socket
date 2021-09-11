@@ -64,6 +64,7 @@ static void* client_handler(void* ser) {
     int msg_id = login_msg.msg_id();
     
     pc->send_pb_msg(&login_msg, msg_id);
+    pc->send_pb_msg(&login_msg, msg_id);
     sleep(10);
     pc->read_data();
     LOG("thread finish!");

@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include "net_buffer.h"
+
 class client_sock {
     public:
         client_sock(int ae_fd, int fd);
@@ -71,7 +73,7 @@ class client_sock {
         int state_ = 0;
 
         //数据cache
-        std::vector<char> buf_;
+        net_buffer buf_;
 
         //buf最大长度
         int max_length_ = 4056;
