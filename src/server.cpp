@@ -29,7 +29,7 @@ server::~server() {
 
 void server::clear_data() {
     for (socket_map::iterator i = socket_map_.begin(); i != socket_map_.end(); ++i) {
-        client_sock* ps = i->second;
+        std::shared_ptr<client_sock> ps = i->second;
 
         if (NULL == ps) {
             continue;
@@ -38,8 +38,6 @@ void server::clear_data() {
         LOG("close client %d", ps->get_fd());
 
         ps->close_sock();
-        
-        delete ps;
     }
     socket_map_.clear();
 
@@ -133,12 +131,16 @@ int server::_ae_accept() {
             break;
         }
 
-        client_sock* pnew_client = on_create_client(ae_fd_, new_socket);
-        if (nullptr == pnew_client) {
+        
+        client_sock* pclient = on_create_client(ae_fd_, new_socket);
+        if (nullptr == pclient) {
             LOG("create client error");
             close(new_socket);
             continue;
         }
+
+        std::shared_ptr<client_sock> pnew_client;
+        pnew_client.reset(pclient);
         
         int res = pnew_client->socket_init();
         if (res != 0) {
@@ -153,31 +155,13 @@ int server::_ae_accept() {
     return res;
 }
 
-client_sock* server::get_sock_ps(int cur_fd) {
+std::shared_ptr<client_sock> server::get_sock_ps(int cur_fd) {
     socket_map::iterator iter = socket_map_.find(cur_fd);
     if (iter == socket_map_.end()) {
         return NULL;
     }
 
     return iter->second;
-}
-
-void server::rm_client_sock(int fd) {
-    socket_map::iterator iter = socket_map_.find(fd);
-    if (iter == socket_map_.end()) {
-        return;
-    }
-    
-    client_sock* ps = iter->second;
-    socket_map_.erase(iter);
-
-    if (NULL == ps) {
-        return;
-    }
-    
-    ps->close_sock();
-    delete ps;    
-    LOG("delete fd:%d client close socket", fd);
 }
 
 int server::ae_poll() {
@@ -210,7 +194,7 @@ int server::ae_poll() {
                 _ae_accept();
             }
             else {
-                client_sock* ps = get_sock_ps(cur_fd);
+                std::shared_ptr<client_sock> ps = get_sock_ps(cur_fd);
                 if (NULL == ps) {
                     continue;
                 }
@@ -236,14 +220,13 @@ client_sock* server::on_create_client(int ae_fd, int new_conn_fd) {
 void server::update() {
     for (socket_map::iterator iter = socket_map_.begin();
     iter != socket_map_.end(); ) {
-        client_sock* psock = iter->second;
+        std::shared_ptr<client_sock> psock = iter->second;
         if (!psock) {
             continue;
         }
 
         if (psock->get_state() == socket_close) {
             psock->close_sock();
-            delete psock;
 
             socket_map_.erase(iter++);
             continue;

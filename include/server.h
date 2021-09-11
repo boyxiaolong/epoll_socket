@@ -22,10 +22,7 @@ class server {
         virtual int create_server_sock(const char* ip, uint16_t port);
 
         //获取连接
-        client_sock* get_sock_ps(int cur_fd);
-
-        //删除连接
-        virtual void rm_client_sock(int cur_fd);
+        std::shared_ptr<client_sock> get_sock_ps(int cur_fd);
 
         //epoll事件循环
         virtual int ae_poll();
@@ -50,7 +47,7 @@ class server {
         //监听socket实例
         std::unique_ptr<client_sock> pserver_sock_;
 
-        typedef std::map<int, client_sock*> socket_map;
+        typedef std::map<int, std::shared_ptr<client_sock> > socket_map;
 
         int listen_fd_ = 0;
 
