@@ -118,6 +118,8 @@ void protobuf_client::handle_logic() {
     for (auto pmsg : read_net_buffer_vec_) {
         handle_msg(pmsg);
     }
+
+    LOG("handle read_net_buffer size:%d", read_net_buffer_vec_.size());
     read_net_buffer_vec_.clear();
 }
 
