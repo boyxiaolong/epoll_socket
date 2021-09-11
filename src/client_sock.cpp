@@ -260,3 +260,7 @@ int client_sock::set_keeplive() {
     return 0;
 
 }
+
+void client_sock::update() {
+
+}

@@ -121,3 +121,7 @@ void protobuf_client::handle_logic() {
     }
     net_buffer_vec_.clear();
 }
+
+void protobuf_client::update() {
+    LOG("sock fd %d", fd_);
+}

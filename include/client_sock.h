@@ -53,6 +53,8 @@ class client_sock {
 
         int set_keeplive();
 
+        virtual void update();
+
     protected:
         void add_pos(int length);
 

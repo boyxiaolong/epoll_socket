@@ -28,6 +28,8 @@ public:
 
     void handle_logic();
 
+    virtual void update();
+
 private:
     typedef std::vector<std::shared_ptr<net_buffer> > net_buffer_vec;
     net_buffer_vec net_buffer_vec_;

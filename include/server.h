@@ -37,6 +37,8 @@ class server {
 
         int get_ae_fd(){return ae_fd_;}
 
+        void update();
+
     private:
         //处理新连接
         int _ae_accept();
@@ -45,9 +47,10 @@ class server {
         //epoll fd
         int ae_fd_ = 0;
 
-        typedef std::map<int, client_sock*> socket_map;
         //监听socket实例
         std::unique_ptr<client_sock> pserver_sock_;
+
+        typedef std::map<int, client_sock*> socket_map;
 
         int listen_fd_ = 0;
 

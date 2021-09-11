@@ -220,6 +220,8 @@ int server::ae_poll() {
                 }
             }
         }
+
+        update();
     }
     LOG("server finish");
     return 0;
@@ -229,4 +231,12 @@ int server::ae_poll() {
 client_sock* server::on_create_client(int ae_fd, int new_conn_fd) {
     client_sock* ps = new client_sock(ae_fd_, new_conn_fd);
     return ps;
+}
+
+void server::update() {
+    for (socket_map::iterator iter = socket_map_.begin();
+    iter != socket_map_.end(); ++iter) {
+        client_sock* psock = iter->second;
+        psock->update();
+    }
 }
