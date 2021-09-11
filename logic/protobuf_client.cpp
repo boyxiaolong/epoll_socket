@@ -98,7 +98,7 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
 
     int total_size = sizeof(int)*2 + msg_size;
 
-    LOG("send msg size %d msg_id %d total_size %d",  msg_size, msg_id, total_size);
+    //LOG("send msg size %d msg_id %d total_size %d",  msg_size, msg_id, total_size);
 
     std::shared_ptr<net_buffer> psend_buff(new net_buffer(total_size));
     memcpy(psend_buff->get_raw_data(), (char*)&total_size, sizeof(int));

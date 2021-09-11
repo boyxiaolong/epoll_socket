@@ -54,6 +54,8 @@ class client_sock {
         //设置读写事件
         int set_event(int event);
 
+        int remove_event(int event);
+
         //同步连接
         int sync_connect(const char* ip, uint16_t port);
 

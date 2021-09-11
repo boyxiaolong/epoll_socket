@@ -321,10 +321,16 @@ int client_sock::_send_data() {
             break;
         }
 
+        LOG("send one");
         if (n != length) {
             LOG("fd %d error", fd_);
             return -1;
         }
+    }
+
+    if (send_net_buffer_vec_.empty()) {
+        is_sending_ = false;
+        remove_event(EPOLLOUT);
     }
 
     return 0;
@@ -336,4 +342,22 @@ int client_sock::on_read() {
 
 int client_sock::on_write() {
     return _send_data();
+}
+
+int client_sock::remove_event(int event) {
+    if (!(ep_event_ & event)) {
+        LOG("not need remove fd %d", fd_);
+        return 0;
+    }
+
+    ep_event_ = ep_event_ ^ event;
+    epoll_event ev;
+    ev.events = event;
+    ev.data.fd = fd_;
+    if (epoll_ctl(ae_fd_, EPOLL_CTL_DEL, fd_, &ev) < 0) {
+        LOG("error epoll_ctl error %s", strerror(errno));
+        return -1;
+    }
+
+    return 0;
 }
