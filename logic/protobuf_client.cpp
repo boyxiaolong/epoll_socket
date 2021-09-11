@@ -63,10 +63,6 @@ int protobuf_client::read_data() {
     return 0;
 }
 
-
-void protobuf_client::process_data() {
-}
-
 int protobuf_client::handle_msg(std::shared_ptr<net_buffer> pnet_buffer) {
     switch (pnet_buffer->get_msg_id())
     {
@@ -114,7 +110,7 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
     return 0;
 }
 
-void protobuf_client::handle_logic() {
+void protobuf_client::process_data() {
     for (auto pmsg : read_net_buffer_vec_) {
         handle_msg(pmsg);
     }
@@ -125,5 +121,5 @@ void protobuf_client::handle_logic() {
 
 void protobuf_client::update() {
     LOG("sock fd %d", fd_);
-    handle_logic();
+    process_data();
 }

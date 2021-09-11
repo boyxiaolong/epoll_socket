@@ -278,8 +278,9 @@ void client_sock::on_disconnect() {
 
 int client_sock::send_data(std::shared_ptr<net_buffer> buff_data) {
     if (is_block_) {
-        send_data(buff_data->get_raw_data(), buff_data->get_length());
+        return send_data(buff_data->get_raw_data(), buff_data->get_length());
     }
 
+    send_net_buffer_vec_.push_back(buff_data);
     return 0;
 }

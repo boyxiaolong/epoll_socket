@@ -26,8 +26,6 @@ public:
 
     int send_pb_msg(google::protobuf::Message* pmsg, int msg_id);
 
-    void handle_logic();
-
     virtual void update();
 
 private:
