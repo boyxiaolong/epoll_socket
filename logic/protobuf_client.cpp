@@ -46,8 +46,6 @@ int protobuf_client::read_data() {
             return -1;
         }
 
-        LOG("msg_length %d msg_id %d", msg_length, msg_id);
-
         int left_msg_len = msg_length - 8;
         std::shared_ptr<net_buffer> pbuff(new net_buffer(left_msg_len));
         pbuff->set_msg_id(msg_id);
