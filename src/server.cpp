@@ -225,14 +225,15 @@ void server::update() {
             continue;
         }
 
+        psock->update();
+
         if (psock->get_state() == socket_close) {
             psock->close_sock();
 
             socket_map_.erase(iter++);
             continue;
         }
-
-        psock->update();
+        
         ++iter;
     }
 }

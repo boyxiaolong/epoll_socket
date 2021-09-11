@@ -74,8 +74,6 @@ int protobuf_client::handle_msg(std::shared_ptr<net_buffer> pnet_buffer) {
             std::shared_ptr<game::ReqLogin> req_login_msg(new game::ReqLogin);
             req_login_msg->ParseFromArray(pnet_buffer->get_raw_data(), pnet_buffer->get_length());
 
-            //msg_vec_.push_back(req_login_msg);
-            //msg_vec_map[msg_id].push_back(req_login_msg);
             LOG("login account_id %s device_id %d", req_login_msg->account_id().c_str(), req_login_msg->device_id());
 
             game::ResLogin res_login_msg;
@@ -93,6 +91,11 @@ int protobuf_client::handle_msg(std::shared_ptr<net_buffer> pnet_buffer) {
 }
 
 int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
+    if ( state_ != socket_connected ) {
+        LOG("socket not connected");
+        return -1;
+    }
+    
     std::string msg_str = pmsg->SerializeAsString();
     
     int msg_size = msg_str.size();

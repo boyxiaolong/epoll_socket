@@ -35,8 +35,6 @@ private:
     net_buffer_vec net_buffer_vec_;
 
     typedef std::vector<std::shared_ptr<google::protobuf::Message> > msg_vec;
-    //typedef std::map<int, msg_vec> msg_vec_map;
-    //msg_vec_map msg_vec_map_;
     msg_vec msg_vec_;
 };
 #endif
