@@ -104,14 +104,12 @@ int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
 
     LOG("send msg size %d msg_id %d total_size %d",  msg_size, msg_id, total_size);
 
-    char* psend_data = new char[total_size];
-    memcpy(psend_data, (char*)&total_size, sizeof(int));
-    memcpy(psend_data + sizeof(int), (char*)&msg_id, sizeof(int));
-    memcpy(psend_data + sizeof(int)*2, (char*)msg_str.c_str(), msg_size);
+    std::shared_ptr<net_buffer> psend_buff(new net_buffer(total_size));
+    memcpy(psend_buff->get_raw_data(), (char*)&total_size, sizeof(int));
+    memcpy(psend_buff->get_raw_data() + sizeof(int), (char*)&msg_id, sizeof(int));
+    memcpy(psend_buff->get_raw_data() + sizeof(int)*2, (char*)msg_str.c_str(), msg_size);
     
-    send_data(psend_data, total_size);
-
-    delete []psend_data;
+    send_data(psend_buff->get_raw_data(), total_size);
 
     return 0;
 }

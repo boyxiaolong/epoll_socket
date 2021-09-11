@@ -34,6 +34,8 @@ private:
     typedef std::vector<std::shared_ptr<net_buffer> > net_buffer_vec;
     net_buffer_vec read_net_buffer_vec_;
 
+    net_buffer_vec send_net_buffer_vec_;
+
     typedef std::vector<std::shared_ptr<google::protobuf::Message> > msg_vec;
     msg_vec msg_vec_;
 };
