@@ -125,11 +125,29 @@ int client_sock::set_nodelay() {
 }
 
 int client_sock::set_event(int event) {
+    if (ep_event_ == 0) {
+        ep_event_ = event;
+        epoll_event ev;
+        ev.events = ep_event_;
+        ev.data.fd = fd_;
+        if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, fd_, &ev) < 0) {
+            LOG("error epoll_ctl error %s", strerror(errno));
+            return -1;
+        }
+
+        return 0;
+    }
+
+    if (ep_event_ & event) {
+        return 0;
+    }
+
+    ep_event_ = ep_event_ | event;
     epoll_event ev;
-    ev.events = event;
+    ev.events = ep_event_;
     ev.data.fd = fd_;
-    if (epoll_ctl(ae_fd_, EPOLL_CTL_ADD, fd_, &ev) < 0) {
-        LOG("error epoll_ctl");
+    if (epoll_ctl(ae_fd_, EPOLL_CTL_MOD, fd_, &ev) < 0) {
+        LOG("error epoll_ctl error %s", strerror(errno));
         return -1;
     }
     return 0;
@@ -296,8 +314,20 @@ int client_sock::_send_data() {
         auto buff_data = send_net_buffer_vec_.front();
         send_net_buffer_vec_.pop();
 
-        send_data(buff_data->get_raw_data(), buff_data->get_length());
+        int length = buff_data->get_length();
+        int n = write(fd_, buff_data->get_raw_data(), length);
+        if (n < 0 && errno == EAGAIN) {
+            LOG("fd %d write this time end", fd_);
+            break;
+        }
+
+        if (n != length) {
+            LOG("fd %d error", fd_);
+            return -1;
+        }
     }
+
+    return 0;
 }
 
 int client_sock::on_read() {

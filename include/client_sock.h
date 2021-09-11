@@ -113,5 +113,7 @@ class client_sock {
         net_buffer_vec send_net_buffer_vec_;
         
         bool is_sending_ = false;
+
+        int ep_event_ = 0; 
 };
 #endif
