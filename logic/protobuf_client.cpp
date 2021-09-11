@@ -92,7 +92,7 @@ int protobuf_client::handle_msg(std::shared_ptr<net_buffer> pnet_buffer) {
 
 int protobuf_client::send_pb_msg(google::protobuf::Message* pmsg, int msg_id) {
     if ( state_ != socket_connected ) {
-        LOG("socket not connected");
+        LOG("socket not connected state:%d", state_);
         return -1;
     }
     
