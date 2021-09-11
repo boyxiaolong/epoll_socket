@@ -24,12 +24,18 @@ int protobuf_client::read_data() {
         int msg_length = 0;
         nread = read(fd_, &msg_length, 4);
         if (nread == 0) {
-            LOG("read 0");
-            break;
+            LOG("read header error read_num %d error: %s", nread, strerror(errno));
+            return -1;
+        }
+
+        if (nread < 0) {
+            if (errno == EAGAIN) {
+                break;
+            }
         }
 
         if (nread != 4) {
-            LOG("read header error read_num %d", nread);
+            LOG("read header error read_num %d error: %s", nread, strerror(errno));
             return -1;
         }
 
@@ -113,4 +119,5 @@ void protobuf_client::handle_logic() {
     for (auto pmsg : net_buffer_vec_) {
         handle_msg(pmsg);
     }
+    net_buffer_vec_.clear();
 }
