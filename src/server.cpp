@@ -216,7 +216,7 @@ int server::ae_poll() {
                 }
                 int res = ps->read_data();
                 if (res < 0) {
-                    rm_client_sock(cur_fd);
+                    ps->on_disconnect();
                 }
             }
         }
@@ -235,8 +235,21 @@ client_sock* server::on_create_client(int ae_fd, int new_conn_fd) {
 
 void server::update() {
     for (socket_map::iterator iter = socket_map_.begin();
-    iter != socket_map_.end(); ++iter) {
+    iter != socket_map_.end(); ) {
         client_sock* psock = iter->second;
+        if (!psock) {
+            continue;
+        }
+
+        if (psock->get_state() == socket_close) {
+            psock->close_sock();
+            delete psock;
+
+            socket_map_.erase(iter++);
+            continue;
+        }
+
         psock->update();
+        ++iter;
     }
 }

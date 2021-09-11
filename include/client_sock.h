@@ -64,6 +64,8 @@ class client_sock {
 
         virtual void on_disconnect();
 
+        int get_state(){return state_;}
+
     protected:
         void add_pos(int length);
 
