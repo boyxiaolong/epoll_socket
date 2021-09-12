@@ -27,6 +27,10 @@ public:
 
     int send_pb_msg(google::protobuf::Message* pmsg, int msg_id);
 
+    virtual void before_heart_beat();
+
+    virtual void on_heart_beat();
+
 private:
     typedef std::queue<std::shared_ptr<google::protobuf::Message> > msg_vec;
     msg_vec msg_vec_;

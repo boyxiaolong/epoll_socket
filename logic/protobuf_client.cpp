@@ -117,3 +117,11 @@ void protobuf_client::process_data() {
         handle_msg(buff_data);
     }
 }
+
+void protobuf_client::before_heart_beat() {
+    LOG("");
+}
+
+void protobuf_client::on_heart_beat() {
+    LOG("");
+}
