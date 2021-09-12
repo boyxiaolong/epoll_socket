@@ -4,9 +4,10 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
-net_timer* net_timer::ptimer_ = nullptr;
+#include "log.h"
 
-int get_miliseconds_now() {
+net_timer* net_timer::ptimer_ = nullptr;
+int64_t get_miliseconds_now() {
   struct timeval spec;
   gettimeofday(&spec, NULL);
   return spec.tv_sec * 1000 + spec.tv_usec / 1000;
@@ -15,7 +16,7 @@ int get_miliseconds_now() {
 int net_timer::add_timer(timer_callback fun, int interval) {
     int next_id = _gen_next_id();
 
-    const int cur_time = get_miliseconds_now();
+    const int64_t cur_time = get_miliseconds_now();
 
     timer_data data;
     data.id_ = next_id;
@@ -24,6 +25,8 @@ int net_timer::add_timer(timer_callback fun, int interval) {
     data.fun_ = fun;
 
     timer_queue_.push(data);
+
+    LOG("id :%d", next_id);
 
     return next_id;
 }
@@ -40,8 +43,10 @@ int net_timer::_gen_next_id() {
     return id_;
 }
 
-int net_timer::run() {
-    const int cur_time = get_miliseconds_now();
+int net_timer::update() {
+    const int64_t cur_time = get_miliseconds_now();
+
+    LOG("size %d", timer_queue_.size());
 
     while (!timer_queue_.empty()) {
         timer_data data = timer_queue_.top();

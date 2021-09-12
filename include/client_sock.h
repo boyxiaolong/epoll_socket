@@ -87,7 +87,7 @@ class client_sock {
     private:
         int _send_data();
 
-        void _heart_beat_check(int cur);
+        void _heart_beat_check(int64_t cur);
 
         int _start_heart_beat();
 
@@ -120,7 +120,7 @@ class client_sock {
 
         int ep_event_ = 0; 
 
-        int heart_beat_interval_ = 10;
+        int heart_beat_interval_ = 1000;
 
         int heart_beat_timer_id_ = 0;
 };

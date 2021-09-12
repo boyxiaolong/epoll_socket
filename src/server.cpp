@@ -13,6 +13,7 @@
 
 #include "../include/log.h"
 #include "../include/client_sock.h"
+#include "../include/net_timer.h"
 
 #include <string>
 
@@ -244,4 +245,6 @@ void server::update() {
         
         ++iter;
     }
+
+    net_timer::get_instance()->update();
 }

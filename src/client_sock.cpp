@@ -190,10 +190,7 @@ int client_sock::socket_init() {
         return -1;
     }
 
-    auto ptimer = net_timer::get_instance();
-    if (ptimer) {
-        ptimer->add_timer(std::bind());
-    }
+    _start_heart_beat();
     return 0;
 }
 
@@ -361,8 +358,12 @@ int client_sock::on_write() {
     return _send_data();
 }
 
-void client_sock::_heart_beat_check(int cur) {
-    LOG("");
+void client_sock::_heart_beat_check(int64_t cur) {
+    LOG("cur %lld", cur);
+
+    heart_beat_timer_id_ = 0;
+
+    _start_heart_beat();
 }
 
 int client_sock::_start_heart_beat() {
@@ -373,4 +374,7 @@ int client_sock::_start_heart_beat() {
 
     heart_beat_timer_id_ = net_timer::get_instance()->add_timer(std::bind(&client_sock::_heart_beat_check
     , this, std::placeholders::_1), heart_beat_interval_);
+
+    LOG("timer_id %d", heart_beat_timer_id_);
+    return 0;
 }

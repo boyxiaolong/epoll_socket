@@ -4,11 +4,11 @@
 #include <queue>
 #include <functional>
 
-typedef std::function<void(int)> timer_callback;
+typedef std::function<void(int64_t)> timer_callback;
 
 struct timer_data {
     int id_;
-    int fire_time_;
+    int64_t fire_time_;
     int inteval_;
     //bool is_repeated;
 
@@ -27,7 +27,7 @@ public:
 
     int get_min_interval();
 
-    int run();
+    int update();
 
     static net_timer* get_instance();
 
