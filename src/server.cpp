@@ -111,7 +111,7 @@ int server::create_server_sock(const char* ip, uint16_t port) {
     pserver_sock_ = std::make_unique<client_sock>(ae_fd_, listen_fd_);
     pserver_sock_->set_noblock();
     pserver_sock_->set_nodelay();
-    pserver_sock_->set_event(EPOLLIN);
+    pserver_sock_->set_event(true, false);
     return 0;
 }
 

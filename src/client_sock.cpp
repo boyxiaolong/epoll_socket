@@ -123,7 +123,16 @@ int client_sock::set_nodelay() {
     return setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(&val));
 }
 
-int client_sock::set_event(int event) {
+int client_sock::set_event(bool is_read, bool is_write) {
+    int event = 0;
+    if (is_read) {
+        event |= EPOLLIN;
+    }
+
+    if (is_write) {
+        event |= EPOLLOUT;
+    }
+
     if (ep_event_ == 0) {
         ep_event_ = event;
         epoll_event ev;
@@ -138,12 +147,12 @@ int client_sock::set_event(int event) {
         return 0;
     }
 
-    if (ep_event_ & event) {
+    if (ep_event_ = event) {
         LOG("already set event %d", event);
         return 0;
     }
 
-    ep_event_ = ep_event_ | event;
+    ep_event_ = event;
     epoll_event ev;
     ev.events = ep_event_;
     ev.data.fd = fd_;
@@ -177,7 +186,7 @@ int client_sock::socket_init() {
         return -1;
     }
     
-    res = set_event(EPOLLIN);
+    res = set_event(true, false);
     if (res != 0) {
         LOG("set_event error");
         return -1;
@@ -304,7 +313,7 @@ int client_sock::send_data(std::shared_ptr<net_buffer> buff_data) {
     }
 
     if (!is_sending_) {
-        set_event(EPOLLOUT);
+        set_event(true, true);
         is_sending_ = true;
         LOG("try send");
     }
@@ -334,7 +343,7 @@ int client_sock::_send_data() {
 
     if (send_net_buffer_vec_.empty()) {
         is_sending_ = false;
-        remove_event(EPOLLOUT);
+        set_event(true, false);
     }
 
     return 0;
@@ -348,24 +357,4 @@ int client_sock::on_read() {
 int client_sock::on_write() {
     LOG("");
     return _send_data();
-}
-
-int client_sock::remove_event(int event) {
-    if (!(ep_event_ & event)) {
-        LOG("not need remove fd %d", fd_);
-        return 0;
-    }
-
-    ep_event_ = ep_event_ ^ event;
-    epoll_event ev;
-    ev.events = event;
-    ev.data.fd = fd_;
-    if (epoll_ctl(ae_fd_, EPOLL_CTL_DEL, fd_, &ev) < 0) {
-        LOG("error epoll_ctl error %s", strerror(errno));
-        return -1;
-    }
-
-    LOG("event %d ep_event %d", event, ep_event_);
-
-    return 0;
 }
