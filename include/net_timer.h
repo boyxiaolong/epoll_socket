@@ -32,7 +32,7 @@ public:
     static net_timer* get_instance();
 
 private:
-    net_timer();
+    net_timer(){}
     int _gen_next_id();
 
 private:

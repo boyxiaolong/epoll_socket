@@ -141,7 +141,6 @@ int server::_ae_accept() {
 
         std::shared_ptr<client_sock> pnew_client;
         pnew_client.reset(pclient);
-        pnew_client->set_timer(ptimer_);
 
         int res = pnew_client->socket_init();
         if (res != 0) {

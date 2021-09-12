@@ -25,7 +25,7 @@ int net_timer::add_timer(timer_callback fun, int interval) {
 
     timer_queue_.push(data);
 
-    return 0;
+    return next_id;
 }
 
 int net_timer::get_min_interval() {

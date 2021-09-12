@@ -89,6 +89,8 @@ class client_sock {
 
         void _heart_beat_check(int cur);
 
+        int _start_heart_beat();
+
     protected:
         //epoll fd
         int ae_fd_ = 0;
@@ -117,5 +119,9 @@ class client_sock {
         bool is_sending_ = false;
 
         int ep_event_ = 0; 
+
+        int heart_beat_interval_ = 10;
+
+        int heart_beat_timer_id_ = 0;
 };
 #endif

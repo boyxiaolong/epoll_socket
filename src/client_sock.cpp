@@ -364,3 +364,13 @@ int client_sock::on_write() {
 void client_sock::_heart_beat_check(int cur) {
     LOG("");
 }
+
+int client_sock::_start_heart_beat() {
+    if (heart_beat_timer_id_ > 0) {
+        LOG("");
+        return 0;
+    }
+
+    heart_beat_timer_id_ = net_timer::get_instance()->add_timer(std::bind(&client_sock::_heart_beat_check
+    , this, std::placeholders::_1), heart_beat_interval_);
+}
