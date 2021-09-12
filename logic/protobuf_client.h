@@ -5,6 +5,7 @@
 
 #include <string>
 #include <memory>
+#include <queue>
 
 namespace google {
     namespace protobuf {
@@ -27,7 +28,7 @@ public:
     int send_pb_msg(google::protobuf::Message* pmsg, int msg_id);
 
 private:
-    typedef std::vector<std::shared_ptr<google::protobuf::Message> > msg_vec;
+    typedef std::queue<std::shared_ptr<google::protobuf::Message> > msg_vec;
     msg_vec msg_vec_;
 };
 #endif
