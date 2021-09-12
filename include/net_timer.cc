@@ -7,7 +7,8 @@
 #include "log.h"
 
 net_timer* net_timer::ptimer_ = nullptr;
-int64_t get_miliseconds_now() {
+
+int64_t net_timer::get_miliseconds_now() {
   struct timeval spec;
   gettimeofday(&spec, NULL);
   return spec.tv_sec * 1000 + spec.tv_usec / 1000;
@@ -76,4 +77,5 @@ net_timer* net_timer::get_instance() {
 
 int net_timer::remove_timer(int id) {
     remove_ids_.insert(id);
+    return 0;
 }

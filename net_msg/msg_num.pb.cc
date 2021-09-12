@@ -50,12 +50,13 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\rmsg_num.proto\022\004game*M\n\006MsgNum\022\016\n\neMsg_"
+      "\n\rmsg_num.proto\022\004game*{\n\006MsgNum\022\016\n\neMsg_"
       "Begin\020\000\022\021\n\reMsg_ReqLogin\020\001\022\021\n\reMsg_ResLo"
-      "gin\020\002\022\r\n\010eMsg_End\020\347\007b\006proto3"
+      "gin\020\002\022\025\n\021eMsg_ReqHeartBeat\020\003\022\025\n\021eMsg_Res"
+      "HeartBeat\020\004\022\r\n\010eMsg_End\020\347\007b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 108);
+      descriptor, 154);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "msg_num.proto", &protobuf_RegisterTypes);
 }
@@ -81,6 +82,8 @@ bool MsgNum_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
+    case 4:
     case 999:
       return true;
     default:

@@ -4,10 +4,12 @@
 #include <errno.h>
 
 #include "../include/log.h"
+#include "../include/net_timer.h"
 
 #include "../net_msg/login.pb.h"
 #include "../net_msg/login.pb.h"
 #include "../net_msg/msg_num.pb.h"
+#include "../net_msg/heart_beat.pb.h"
 
 #include <google/protobuf/message.h>
 
@@ -120,8 +122,17 @@ void protobuf_client::process_data() {
 
 void protobuf_client::before_heart_beat() {
     LOG("");
+    last_heart_beat_time_ = net_timer::get_miliseconds_now();
+    game::ReqHeart msg;
+    msg.set_msg_id(game::eMsg_ReqHeartBeat);
+    send_pb_msg(&msg, msg.msg_id());
 }
 
 void protobuf_client::on_heart_beat() {
     LOG("");
+    auto now = net_timer::get_miliseconds_now();
+    if (now - last_heart_beat_time_ > 1000) {
+        LOG("heartcheck warning!!");
+        return;
+    }
 }

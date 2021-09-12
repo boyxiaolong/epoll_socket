@@ -52,6 +52,8 @@ enum MsgNum {
   eMsg_Begin = 0,
   eMsg_ReqLogin = 1,
   eMsg_ResLogin = 2,
+  eMsg_ReqHeartBeat = 3,
+  eMsg_ResHeartBeat = 4,
   eMsg_End = 999,
   MsgNum_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   MsgNum_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max

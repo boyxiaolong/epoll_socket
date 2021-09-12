@@ -127,5 +127,7 @@ class client_sock {
         int heart_beat_interval_ = 1000;
 
         int heart_beat_timer_id_ = 0;
+
+        int last_heart_beat_time_ = 0;//上次心跳处理时间
 };
 #endif

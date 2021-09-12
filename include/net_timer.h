@@ -24,6 +24,8 @@ struct timer_data {
 
 class net_timer {
 public:
+    static int64_t get_miliseconds_now();
+
     int add_timer(timer_callback fun, int interval);
 
     int get_min_interval();
