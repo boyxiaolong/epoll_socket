@@ -114,9 +114,12 @@ int main(int argc, char* argv[]) {
     if (program_type_test == program_type) {
         int argc = 0;
         char* argv[] = {"test"};
-        testing::GTEST_FLAG(output) = "xml:"; //若要生成xml结果文件
+        testing::GTEST_FLAG(output) = "xml:";
+        LOG("test1");
         testing::InitGoogleTest(&argc, argv);
+        LOG("test2");
         RUN_ALL_TESTS();
+        LOG("test3");
         return 0;
     }
     

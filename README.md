@@ -1,7 +1,7 @@
 # epoll_socket
 实现了简单的基于epoll的服务端
 
-编译：需要安装scons，protobuf_complier3,然后cd epoll_socket,执行scons即可,
+编译：需要安装scons，protobuf_complier3, gtest,然后cd epoll_socket,执行scons即可,
 
 暂时只支持一个epoll一个Server，监听一个端口，处理多个客户端连接;
 
@@ -14,6 +14,8 @@
 执行 ./epoll_test 默认开启端口为9999的服务器
 
 ./epoll_test 1 10 启动10个线程，每个线程启动1个客户端去连接服务器。
+
+./epoll 2开启单元测试
 
 TODO:
 
