@@ -20,7 +20,6 @@
 #define max_buff 1024
 
 server::server() {
-
 }
 
 server::~server() {
@@ -112,6 +111,7 @@ int server::create_server_sock(const char* ip, uint16_t port) {
     pserver_sock_->set_noblock();
     pserver_sock_->set_nodelay();
     pserver_sock_->set_event(true, false);
+    
     return 0;
 }
 
@@ -141,12 +141,13 @@ int server::_ae_accept() {
 
         std::shared_ptr<client_sock> pnew_client;
         pnew_client.reset(pclient);
-        
+        pnew_client->set_timer(ptimer_);
+
         int res = pnew_client->socket_init();
         if (res != 0) {
             LOG("socket_init error");
         }
-        
+
         LOG("add new socket %d", new_socket);
         socket_map_.insert(std::make_pair(new_socket, pnew_client));
     } while (true);

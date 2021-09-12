@@ -15,8 +15,10 @@
 #include "netdb.h"
 
 #include <string>
+#include <functional>
 
 #include "../include/log.h"
+#include "../include/net_timer.h"
 
 client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 , fd_(fd)
@@ -188,6 +190,10 @@ int client_sock::socket_init() {
         return -1;
     }
 
+    auto ptimer = net_timer::get_instance();
+    if (ptimer) {
+        ptimer->add_timer(std::bind());
+    }
     return 0;
 }
 
@@ -353,4 +359,8 @@ int client_sock::on_read() {
 int client_sock::on_write() {
     LOG("");
     return _send_data();
+}
+
+void client_sock::_heart_beat_check(int cur) {
+    LOG("");
 }

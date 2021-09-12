@@ -10,7 +10,7 @@ struct timer_data {
     int id_;
     int fire_time_;
     int inteval_;
-    bool is_repeated;
+    //bool is_repeated;
 
     timer_callback fun_;
     bool operator <(const timer_data& value) const{
@@ -29,12 +29,17 @@ public:
 
     int run();
 
+    static net_timer* get_instance();
+
 private:
+    net_timer();
     int _gen_next_id();
 
 private:
     int id_ = 0;
     std::priority_queue<timer_data> timer_queue_;
+
+    static net_timer* ptimer_;
 };
 
 #endif

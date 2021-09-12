@@ -4,6 +4,8 @@
 #include <map>
 #include <memory>
 
+#include "net_timer.h"
+
 class client_sock;
 
 class server {

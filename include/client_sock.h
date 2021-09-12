@@ -87,6 +87,8 @@ class client_sock {
     private:
         int _send_data();
 
+        void _heart_beat_check(int cur);
+
     protected:
         //epoll fd
         int ae_fd_ = 0;

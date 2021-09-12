@@ -4,6 +4,8 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
+net_timer* net_timer::ptimer_ = nullptr;
+
 int get_miliseconds_now() {
   struct timeval spec;
   gettimeofday(&spec, NULL);
@@ -20,7 +22,6 @@ int net_timer::add_timer(timer_callback fun, int interval) {
     data.inteval_ = interval;
     data.fire_time_ = cur_time + interval;
     data.fun_ = fun;
-    data.is_repeated = true;
 
     timer_queue_.push(data);
 
@@ -42,8 +43,6 @@ int net_timer::_gen_next_id() {
 int net_timer::run() {
     const int cur_time = get_miliseconds_now();
 
-    std::vector<timer_data> next_vec;
-
     while (!timer_queue_.empty()) {
         timer_data data = timer_queue_.top();
         if (data.fire_time_ > cur_time) {
@@ -53,19 +52,15 @@ int net_timer::run() {
         timer_queue_.pop();
 
         data.fun_(cur_time);
-
-        if (data.is_repeated) {
-            timer_data new_data = data;
-            new_data.fire_time_ = cur_time + new_data.inteval_;
-            new_data.id_ = _gen_next_id();
-
-            next_vec.push_back(new_data);
-        }
-    }
-
-    for (auto data : next_vec) {
-        timer_queue_.push(data);
     }
 
     return 0;
+}
+
+net_timer* net_timer::get_instance() {
+    if (ptimer_ == nullptr) {
+        ptimer_ = new net_timer();
+    }
+
+    return ptimer_;
 }
