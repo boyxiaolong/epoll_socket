@@ -184,14 +184,11 @@ int server::ae_poll() {
             exit(-1);
         }
 
-        LOG("get epoll data %d", nfds);
-
         for (size_t i = 0; i < nfds; i++) {
             epoll_event& cur_ev = events[i];
             int cur_fd = cur_ev.data.fd;
             int event = cur_ev.events;
 
-            LOG("epoll cur_fd %d", cur_fd);
             if (cur_fd == listen_fd_) {
                 _ae_accept();
             } 

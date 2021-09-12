@@ -27,8 +27,6 @@ client_sock::client_sock(int ae_fd, int fd): ae_fd_(ae_fd)
 }
 
 client_sock::~client_sock() {
-    LOG("fd %d dtor", fd_);
-    
     close_sock();
 }
         
@@ -143,11 +141,10 @@ int client_sock::set_event(bool is_read, bool is_write) {
             return -1;
         }
 
-        LOG("event %d", event);
         return 0;
     }
 
-    if (ep_event_ = event) {
+    if (ep_event_ == event) {
         LOG("already set event %d", event);
         return 0;
     }
@@ -161,7 +158,6 @@ int client_sock::set_event(bool is_read, bool is_write) {
         return -1;
     }
 
-    LOG("event %d %d", event, ep_event_);
     return 0;
 }
 
