@@ -379,6 +379,10 @@ int client_sock::_start_heart_beat() {
         return 0;
     }
 
+    if (state_ != socket_connected) {
+        return 0;
+    }
+
     before_heart_beat();
 
     heart_beat_timer_id_ = net_timer::get_instance()->add_timer(std::bind(&client_sock::_heart_beat_check

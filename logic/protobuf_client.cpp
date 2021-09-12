@@ -142,8 +142,10 @@ void protobuf_client::before_heart_beat() {
 void protobuf_client::on_heart_beat() {
     LOG("");
     auto now = net_timer::get_miliseconds_now();
-    if (now - last_heart_beat_time_ > 1000) {
-        LOG("heartcheck warning!!");
+    if (now - last_heart_beat_time_ < 1000) {
         return;
     }
+
+    LOG("heartcheck warning!!");
+    on_disconnect();
 }

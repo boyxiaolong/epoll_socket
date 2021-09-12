@@ -58,6 +58,7 @@ int net_timer::update() {
         timer_queue_.pop();
 
         if (remove_ids_.find(data.id_) != remove_ids_.end()){
+            remove_ids_.erase(data.id_);
             continue;
         }
 
@@ -77,5 +78,6 @@ net_timer* net_timer::get_instance() {
 
 int net_timer::remove_timer(int id) {
     remove_ids_.insert(id);
+    LOG("id %d", id);
     return 0;
 }
