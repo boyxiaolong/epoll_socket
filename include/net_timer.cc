@@ -6,6 +6,8 @@
 
 #include "log.h"
 
+#include <limits>
+
 net_timer* net_timer::ptimer_ = nullptr;
 
 int64_t net_timer::get_miliseconds_now() {
@@ -40,6 +42,9 @@ int net_timer::get_min_interval() {
 }
 
 int net_timer::_gen_next_id() {
+    if (id_ == std::numeric_limits<int>::max()) {
+        id_ = 0;
+    }
     ++id_;
     return id_;
 }
