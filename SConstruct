@@ -22,4 +22,4 @@ path= ['/bin', '/usr/bin', '/opt/rh/devtoolset-8/root/usr/bin']
 env = Environment(ENV={'PATH':path})
 env.MergeFlags(inc_flags)
 env.MergeFlags(cc_flags)
-env.Program('epoll_test', list(obj), LIBS=['pthread','protobuf'])
+env.Program('epoll_test', list(obj), LIBS=['pthread','protobuf','gtest'])

@@ -16,6 +16,8 @@
 #include "net_msg/login.pb.h"
 #include "net_msg/msg_num.pb.h"
 
+#include <gtest/gtest.h>
+
 std::atomic<int> is_running(true);
 
 static void ctrl_handler(int sig) {
@@ -93,7 +95,8 @@ void naive_client_for_test(int thread_num) {
 
 enum program_type_enum {
     program_type_server = 0,
-    program_type_client = 1
+    program_type_client = 1,
+    program_type_test = 2
 };
 
 int main(int argc, char* argv[]) {
@@ -106,6 +109,15 @@ int main(int argc, char* argv[]) {
     if (argc > 1) {
         program_type = atoi(argv[1]);
         LOG("program_type %d", program_type); 
+    }
+
+    if (program_type_test == program_type) {
+        int argc = 0;
+        char* argv[] = {"test"};
+        testing::GTEST_FLAG(output) = "xml:"; //若要生成xml结果文件
+        testing::InitGoogleTest(&argc, argv);
+        RUN_ALL_TESTS();
+        return 0;
     }
     
     if (program_type_client == program_type) {
