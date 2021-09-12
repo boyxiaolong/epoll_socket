@@ -77,9 +77,17 @@ int protobuf_client::handle_msg(std::shared_ptr<net_buffer> pnet_buffer) {
             res_login_msg.set_msg_id(game::eMsg_ResLogin);
             res_login_msg.set_actor_id(11);
             send_pb_msg(&res_login_msg, res_login_msg.msg_id());
+            break;
         }
+    case game::eMsg_ReqHeartBeat : {
+        std::shared_ptr<game::ReqHeart> msg(new game::ReqHeart);
+        msg->ParseFromArray(pnet_buffer->get_raw_data(), pnet_buffer->get_length());
+
+        LOG("get heartbeat");
+
+        last_heart_beat_time_ = net_timer::get_miliseconds_now();
         break;
-    
+    }
     default:
         LOG("not handle");
         break;
@@ -122,7 +130,10 @@ void protobuf_client::process_data() {
 
 void protobuf_client::before_heart_beat() {
     LOG("");
-    last_heart_beat_time_ = net_timer::get_miliseconds_now();
+    if (last_heart_beat_time_ == 0){
+        last_heart_beat_time_ = net_timer::get_miliseconds_now();
+    }
+    
     game::ReqHeart msg;
     msg.set_msg_id(game::eMsg_ReqHeartBeat);
     send_pb_msg(&msg, msg.msg_id());
