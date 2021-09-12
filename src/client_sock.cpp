@@ -134,6 +134,7 @@ int client_sock::set_event(int event) {
             return -1;
         }
 
+        LOG("event %d", event);
         return 0;
     }
 
@@ -150,6 +151,8 @@ int client_sock::set_event(int event) {
         LOG("error epoll_ctl error %s", strerror(errno));
         return -1;
     }
+
+    LOG("event %d %d", event, ep_event_);
     return 0;
 }
 
@@ -361,6 +364,8 @@ int client_sock::remove_event(int event) {
         LOG("error epoll_ctl error %s", strerror(errno));
         return -1;
     }
+
+    LOG("event %d ep_event %d", event, ep_event_);
 
     return 0;
 }
