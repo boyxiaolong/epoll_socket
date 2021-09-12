@@ -5,6 +5,7 @@
 
 #include "include/server.h"
 #include "include/log.h"
+#include "include/net_timer.h"
 #include "logic/protobuf_client.h"
 #include "logic/protobuf_server.h"
 
@@ -96,6 +97,8 @@ enum program_type_enum {
 };
 
 int main(int argc, char* argv[]) {
+    std::unique_ptr<net_timer> ptimer(net_timer::get_instance());
+    
     signal(SIGINT, ctrl_handler);
 
     int program_type = 0;
