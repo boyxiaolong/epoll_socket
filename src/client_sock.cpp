@@ -89,7 +89,6 @@ int client_sock::read_data() {
         return -1;
     }
 
-    process_data();
     return 0;
 }
 
@@ -139,6 +138,7 @@ int client_sock::set_event(int event) {
     }
 
     if (ep_event_ & event) {
+        LOG("already set event %d", event);
         return 0;
     }
 
@@ -301,8 +301,9 @@ int client_sock::send_data(std::shared_ptr<net_buffer> buff_data) {
     }
 
     if (!is_sending_) {
-        set_event(EPOLLOUT | EPOLLIN);
+        set_event(EPOLLOUT);
         is_sending_ = true;
+        LOG("try send");
     }
 
     send_net_buffer_vec_.push(buff_data);
@@ -337,10 +338,12 @@ int client_sock::_send_data() {
 }
 
 int client_sock::on_read() {
+    LOG("");
     return read_data();
 }
 
 int client_sock::on_write() {
+    LOG("");
     return _send_data();
 }
 
