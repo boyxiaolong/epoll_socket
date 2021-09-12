@@ -1,0 +1,10 @@
+syntax="proto3";
+package game;
+
+message ReqHeart {
+  int32 msg_id = 1;
+}
+
+message ResHeart {
+  int32 msg_id = 1;
+}

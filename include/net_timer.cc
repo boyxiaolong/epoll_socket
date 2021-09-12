@@ -56,6 +56,10 @@ int net_timer::update() {
 
         timer_queue_.pop();
 
+        if (remove_ids_.find(data.id_) != remove_ids_.end()){
+            continue;
+        }
+
         data.fun_(cur_time);
     }
 
@@ -68,4 +72,8 @@ net_timer* net_timer::get_instance() {
     }
 
     return ptimer_;
+}
+
+int net_timer::remove_timer(int id) {
+    remove_ids_.insert(id);
 }

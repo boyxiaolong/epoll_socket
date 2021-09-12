@@ -2,6 +2,7 @@
 #define _net_timer_h__
 
 #include <queue>
+#include <set>
 #include <functional>
 
 typedef std::function<void(int64_t)> timer_callback;
@@ -31,6 +32,8 @@ public:
 
     static net_timer* get_instance();
 
+    int remove_timer(int id);
+
 private:
     net_timer(){}
     int _gen_next_id();
@@ -40,6 +43,8 @@ private:
     std::priority_queue<timer_data> timer_queue_;
 
     static net_timer* ptimer_;
+
+    std::set<int> remove_ids_;
 };
 
 #endif

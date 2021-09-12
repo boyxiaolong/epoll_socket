@@ -78,6 +78,10 @@ class client_sock {
 
         int on_write();
 
+        virtual void before_heart_beat();
+
+        virtual void on_heart_beat();
+
     protected:
         void add_pos(int length);
 

@@ -98,6 +98,11 @@ void client_sock::close_sock(){
         ae_fd_ = 0;
     }
     
+    if (heart_beat_timer_id_ > 0) {
+        net_timer::get_instance()->remove_timer(heart_beat_timer_id_);
+        heart_beat_timer_id_ = 0;
+    }
+
     if (fd_ > 0) {
         LOG("fd %d", fd_);
         close(fd_);
@@ -361,6 +366,8 @@ int client_sock::on_write() {
 void client_sock::_heart_beat_check(int64_t cur) {
     LOG("cur %lld", cur);
 
+    on_heart_beat();
+    
     heart_beat_timer_id_ = 0;
 
     _start_heart_beat();
@@ -372,9 +379,19 @@ int client_sock::_start_heart_beat() {
         return 0;
     }
 
+    before_heart_beat();
+
     heart_beat_timer_id_ = net_timer::get_instance()->add_timer(std::bind(&client_sock::_heart_beat_check
     , this, std::placeholders::_1), heart_beat_interval_);
 
     LOG("timer_id %d", heart_beat_timer_id_);
     return 0;
+}
+
+void client_sock::before_heart_beat() {
+    LOG("");
+}
+
+void client_sock::on_heart_beat() {
+    LOG("");
 }
